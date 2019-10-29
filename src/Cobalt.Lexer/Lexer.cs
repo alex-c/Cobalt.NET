@@ -387,8 +387,8 @@ namespace Cobalt.Lexer
         /// <param name="arity">The operator arity.</param>
         private void EnrichOperatorToken(Token token, int precedence, int arity)
         {
-            token.SetData(TokenDataKeys.OPERATOR_PRECEDENCE, 1);
-            token.SetData(TokenDataKeys.OPERATOR_ARITY, 2);
+            token.SetData(TokenDataKeys.OPERATOR_PRECEDENCE, precedence);
+            token.SetData(TokenDataKeys.OPERATOR_ARITY, arity);
         }
     }
 }
