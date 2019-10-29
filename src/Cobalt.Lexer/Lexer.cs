@@ -11,7 +11,7 @@ namespace Cobalt.Lexer
     /// <summary>
     /// A lexer for the Cobalt programming language.
     /// </summary>
-    public class Lexer
+    public class CobaltLexer
     {
         /// <summary>
         /// The characters that can be delimiters to multi-char keywords, identifiers and literal values.
@@ -24,6 +24,16 @@ namespace Cobalt.Lexer
         private readonly Regex IdentifierRegex = new Regex("^[a-z,A-Z]\\w*$");
 
         /// <summary>
+        /// A regular expression to match valid Cobalt integer literals.
+        /// </summary>
+        private readonly Regex IntegerRegex = new Regex("^[0-9]+$");
+
+        /// <summary>
+        /// A regular expression to match valid Cobalt floating point numbers.
+        /// </summary>
+        private readonly Regex FloatRegex = new Regex("^[0-9]+\\.[0-9]+$");
+
+        /// <summary>
         /// A logger for logging inside the lexer.
         /// </summary>
         private ILogger Logger { get; }
@@ -33,9 +43,9 @@ namespace Cobalt.Lexer
         /// Creates a lexer instance with a given logger factory to create a local logger from.
         /// </summary>
         /// <param name="loggerFactory">The logger factory to create a local logger from.</param>
-        public Lexer(ILoggerFactory loggerFactory)
+        public CobaltLexer(ILoggerFactory loggerFactory)
         {
-            Logger = loggerFactory.CreateLogger<Lexer>();
+            Logger = loggerFactory.CreateLogger<CobaltLexer>();
         }
 
         /// <summary>
@@ -205,30 +215,23 @@ namespace Cobalt.Lexer
                                         break;
                                     default:
                                         // Try to parse number literals
-                                        if (float.TryParse(nextWord, out float floatValue))
+                                        if (FloatRegex.Match(nextWord).Success && float.TryParse(nextWord, out float floatValue))
                                         {
-                                            if (nextWord.StartsWith(".") || nextWord.EndsWith("."))
-                                            {
-                                                throw new CobaltSyntaxError("Malformed floating point number: In Cobalt a floating point number at least one digit is expected both before and after the dot.", line);
-                                            }
                                             tokens.Add(CreateLiteralValueToken(CobaltType.Float, floatValue, line));
                                         }
-                                        else if (int.TryParse(nextWord, out int intValue))
+                                        else if (IntegerRegex.Match(nextWord).Success && int.TryParse(nextWord, out int intValue))
                                         {
                                             tokens.Add(CreateLiteralValueToken(CobaltType.Integer, intValue, line));
                                         }
 
                                         // Only identifiers are left to check!
+                                        else if (IdentifierRegex.Match(nextWord).Success)
+                                        {
+                                            tokens.Add(new Token(TokenType.Identifier, line));
+                                        }
                                         else
                                         {
-                                            if (IdentifierRegex.Match(nextWord).Success)
-                                            {
-                                                tokens.Add(new Token(TokenType.Identifier, line));
-                                            }
-                                            else
-                                            {
-                                                throw new CobaltSyntaxError($"Failed to parse word `{nextWord}`, which is no valid Cobalt literal or identifier.", line);
-                                            }
+                                            throw new CobaltSyntaxError($"Failed to parse word `{nextWord}`, which is no valid Cobalt keyword, literal or identifier.", line);
                                         }
                                         break;
                                 }
