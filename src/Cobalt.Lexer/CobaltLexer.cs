@@ -55,7 +55,7 @@ namespace Cobalt.Lexer
         /// <param name="code">The input Cobalt code.</param>
         /// <exception cref="CobaltSyntaxError">Thrown when the input Cobalt code is syntactically incorrect.</exception>
         /// <returns>Returns a collection of tokens.</returns>
-        public ICollection<Token> Tokenize(string code)
+        public List<Token> Tokenize(string code)
         {
             List<Token> tokens = new List<Token>();
 
@@ -254,7 +254,7 @@ namespace Cobalt.Lexer
             }
 
             // Coalesce operators
-            ICollection<Token> tokensWithCoalescedOperators = CoalesceOperators(tokens);
+            List<Token> tokensWithCoalescedOperators = CoalesceOperators(tokens);
 
             // Enrich operators with precedence and arity information
             EnrichOperators(tokensWithCoalescedOperators);
@@ -296,7 +296,7 @@ namespace Cobalt.Lexer
         /// </summary>
         /// <param name="tokens">The input tokens to process.</param>
         /// <returns>The newly created token list with coalesced operators.</returns>
-        private ICollection<Token> CoalesceOperators(ICollection<Token> tokens)
+        private List<Token> CoalesceOperators(List<Token> tokens)
         {
             List<Token> result = new List<Token>();
             int position = 0;
