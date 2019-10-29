@@ -3,6 +3,7 @@ using Cobalt.Tokens;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -215,7 +216,7 @@ namespace Cobalt.Lexer
                                         break;
                                     default:
                                         // Try to parse number literals
-                                        if (FloatRegex.Match(nextWord).Success && float.TryParse(nextWord, out float floatValue))
+                                        if (FloatRegex.Match(nextWord).Success && float.TryParse(nextWord, NumberStyles.Any, CultureInfo.InvariantCulture, out float floatValue))
                                         {
                                             tokens.Add(CreateLiteralValueToken(CobaltType.Float, floatValue, line));
                                         }
