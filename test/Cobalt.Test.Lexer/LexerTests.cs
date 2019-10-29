@@ -112,7 +112,7 @@ namespace Cobalt.Test.Lexer
         {
             ICollection<Token> tokens = Lexer.Tokenize(literalValueString);
 
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.Equal(TokenType.LiteralValue, tokens.First().Type);
             Assert.Equal(CobaltType.Boolean, tokens.First().GetData<CobaltType>(TokenDataKeys.COBALT_TYPE));
         }
@@ -125,7 +125,7 @@ namespace Cobalt.Test.Lexer
         {
             ICollection<Token> tokens = Lexer.Tokenize(literalValueString);
 
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.Equal(TokenType.LiteralValue, tokens.First().Type);
             Assert.Equal(CobaltType.Integer, tokens.First().GetData<CobaltType>(TokenDataKeys.COBALT_TYPE));
         }
@@ -138,7 +138,7 @@ namespace Cobalt.Test.Lexer
         {
             ICollection<Token> tokens = Lexer.Tokenize(literalValueString);
 
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.Equal(TokenType.LiteralValue, tokens.First().Type);
             Assert.Equal(CobaltType.Float, tokens.First().GetData<CobaltType>(TokenDataKeys.COBALT_TYPE));
         }
@@ -269,7 +269,7 @@ namespace Cobalt.Test.Lexer
         {
             ICollection<Token> tokens = Lexer.Tokenize(identifier);
 
-            Assert.Equal(1, tokens.Count);
+            Assert.Single(tokens);
             Assert.Equal(TokenType.Identifier, tokens.First().Type);
         }
 
