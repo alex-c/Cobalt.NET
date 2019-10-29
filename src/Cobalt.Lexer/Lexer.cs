@@ -186,7 +186,7 @@ namespace Cobalt.Lexer
                             if (nextWordLength > 0)
                             {
                                 // Parse the word! Incrementing of position counter at the end.
-                                string nextWord = code.Substring(position, nextWordLimit);
+                                string nextWord = code.Substring(position, nextWordLength);
                                 switch (nextWord)
                                 {
                                     case "def":
