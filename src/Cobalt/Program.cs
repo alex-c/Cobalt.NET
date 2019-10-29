@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Cobalt.Compiler;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,9 @@ using System.Linq;
 
 namespace Cobalt
 {
+    /// <summary>
+    /// The `cobaltc` Cobalt compiler main program.
+    /// </summary>
     public class Program
     {
         private static readonly string ARG_INPUT_FILE = "inputFile";
@@ -54,16 +58,18 @@ namespace Cobalt
             logger.LogDebug("Compiler parameters:");
             logger.LogDebug($" - Input file: {inputFile}");
             logger.LogDebug($" - Target: {target}");
-
-            // TODO: read code from file
-            // TODO: tokenize code
-            // TODO: parse tokens to AST
-            // TODO: type check
-            // TODO: optimize
-            // TODO: initialize a backend
-            // TODO: generate target code
-            // TODO: write target code to file
             
+            // Set up compiler
+            CobaltCompiler compiler = new CobaltCompiler(loggerFactory);
+            // TODO: add target code generator
+
+            // TODO: rad code from input file
+            string code = "TODO!";
+
+            // Compile!
+            compiler.Compile(code);
+
+            // TODO: remove this
             Console.ReadLine();
         }
 
