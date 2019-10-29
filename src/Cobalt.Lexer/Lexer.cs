@@ -211,7 +211,7 @@ namespace Cobalt.Lexer
                                         tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, true, line));
                                         break;
                                     case "false":
-                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, true, line));
+                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, false, line));
                                         break;
                                     default:
                                         // Try to parse number literals
