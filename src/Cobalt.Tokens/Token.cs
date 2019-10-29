@@ -52,7 +52,7 @@ namespace Cobalt.Tokens
         /// <typeparam name="T">Type of the data to get.</typeparam>
         /// <param name="key">Key under which to look for the data.</param>
         /// <returns>Returns the custom data value.</returns>
-        /// <exception cref="CobaltCompilerException">Thrown if there is no data under the given key or the data type does not match.</exception>
+        /// <exception cref="CompilerException">Thrown if there is no data under the given key or the data type does not match.</exception>
         public T GetData<T>(string key)
         {
             if (Data.ContainsKey(key))
@@ -64,12 +64,12 @@ namespace Cobalt.Tokens
                 }
                 else
                 {
-                    throw new CobaltCompilerException($"Tried to read value of type '{typeof(T)}' at the key '{key}' from token of type '{Type}' (from source line {SourceLine}), but got a value of type '{value.GetType()}' instead.");
+                    throw new CompilerException($"Tried to read value of type '{typeof(T)}' at the key '{key}' from token of type '{Type}' (from source line {SourceLine}), but got a value of type '{value.GetType()}' instead.");
                 }
             }
             else
             {
-                throw new CobaltCompilerException($"Tried to read missing value of type '{typeof(T)}' at the key '{key}' from token of type '{Type}' (from source line {SourceLine}).");
+                throw new CompilerException($"Tried to read missing value of type '{typeof(T)}' at the key '{key}' from token of type '{Type}' (from source line {SourceLine}).");
             }
         }
 

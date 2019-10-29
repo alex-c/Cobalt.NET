@@ -246,7 +246,7 @@ namespace Cobalt.Lexer
                             }
                             else
                             {
-                                throw new CobaltCompilerException("Found a multi-char token limit prior to it's start...");
+                                throw new CompilerException("Found a multi-char token limit prior to it's start...");
                             }
                             break;
                     }
