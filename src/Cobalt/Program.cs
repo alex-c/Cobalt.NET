@@ -13,6 +13,7 @@ namespace Cobalt
     public class Program
     {
         private static readonly string ARG_INPUT_FILE = "inputFile";
+        private static readonly string ARG_OUTPUT_DIR = "outputDir";
         private static readonly string ARG_TARGET = "target";
 
         /// <summary>
@@ -25,7 +26,8 @@ namespace Cobalt
             IConfiguration configuration = new ConfigurationBuilder().AddCommandLine(args, new Dictionary<string, string>()
             {
                 { "-i", ARG_INPUT_FILE },
-                { "-t", ARG_TARGET },
+                { "-o", ARG_OUTPUT_DIR },
+                { "-t", ARG_TARGET }
             }).Build();
 
             // Check for verbose mode
@@ -45,10 +47,13 @@ namespace Cobalt
 
             // Parse command line arguments
             string inputFile = configuration.GetValue<string>(ARG_INPUT_FILE);
+            string outputDir = configuration.GetValue<string>(ARG_OUTPUT_DIR);
             string target = configuration.GetValue<string>(ARG_TARGET);
 
             // Validate required parameters
-            if (string.IsNullOrWhiteSpace(inputFile) || string.IsNullOrWhiteSpace(target))
+            if (string.IsNullOrWhiteSpace(inputFile) ||
+                string.IsNullOrWhiteSpace(outputDir) ||
+                string.IsNullOrWhiteSpace(target))
             {
                 logger.LogCritical("One or more required parameter is missing!");
                 PrintHelpAndExit(logger);
@@ -57,6 +62,7 @@ namespace Cobalt
             // Display information in verbose mode
             logger.LogDebug("Compiler parameters:");
             logger.LogDebug($" - Input file: {inputFile}");
+            logger.LogDebug($" - Input dir: {outputDir}");
             logger.LogDebug($" - Target: {target}");
             
             // Set up compiler
@@ -80,7 +86,7 @@ namespace Cobalt
         private static void PrintHelpAndExit(ILogger logger)
         {
             logger.LogInformation("Welcome to the Cobalt compiler version 0.1.0 for Cobalt 0.1.0!");
-            logger.LogInformation(" - Usage: cobaltc -i <inputFile> -t <targetPlatform> [-v]");
+            logger.LogInformation(" - Usage: cobaltc -i <inputFile> -o <outputDir> -t <targetPlatform> [-v]");
             logger.LogInformation(" - Available target platforms: <none>");
             logger.LogInformation("Press any key to terminate...");
             Console.Read();
