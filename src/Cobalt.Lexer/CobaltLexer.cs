@@ -157,11 +157,11 @@ namespace Cobalt.Lexer
                                 }
                                 catch (ArgumentOutOfRangeException)
                                 {
-                                    throw new CobaltSyntaxError("Could not find an EOL to terminate the EOL comment.", line);
+                                    throw new CobaltSyntaxError("Could not find an EOL to terminate the EOL comment.", line, positionOnLine);
                                 }
                                 if (eolPosition == -1)
                                 {
-                                    throw new CobaltSyntaxError("Could not find an EOL to terminate the EOL comment.", line);
+                                    throw new CobaltSyntaxError("Could not find an EOL to terminate the EOL comment.", line, positionOnLine);
                                 }
                                 else
                                 {
@@ -197,7 +197,7 @@ namespace Cobalt.Lexer
                             int nextWordLimit = code.IndexOfAny(Delimiters, position);
                             if (nextWordLimit < 0)
                             {
-                                throw new CobaltSyntaxError("Failed finding end of word, encountered EOF instead. Make sure any statement is terminated by a semicolon (`;`).", line);
+                                throw new CobaltSyntaxError("Failed finding end of word, encountered EOF instead. Make sure any statement is terminated by a semicolon (`;`).", line, positionOnLine);
                             }
 
                             // Get the word length
@@ -250,7 +250,7 @@ namespace Cobalt.Lexer
                                         }
                                         else
                                         {
-                                            throw new CobaltSyntaxError($"Failed to parse word `{nextWord}`, which is no valid Cobalt keyword, literal or identifier.", line);
+                                            throw new CobaltSyntaxError($"Failed to parse word `{nextWord}`, which is no valid Cobalt keyword, literal or identifier.", line, positionOnLine);
                                         }
                                         break;
                                 }
@@ -261,7 +261,7 @@ namespace Cobalt.Lexer
                             }
                             else if (nextWordLimit == 0)
                             {
-                                throw new CobaltSyntaxError("Expected a multi-char token, but encountered a delimiter at position 0.", line);
+                                throw new CobaltSyntaxError("Expected a multi-char token, but encountered a delimiter.", line, positionOnLine);
                             }
                             else
                             {

@@ -39,7 +39,7 @@ namespace Cobalt.Parser
             // Validate input
             if (!tokens.Any())
             {
-                throw new CobaltSyntaxError("A Cobalt program must contain at least one statement.", 1);
+                throw new CobaltSyntaxError("A Cobalt program must contain at least one statement.");
             }
 
             // Parse program as a code block
@@ -67,24 +67,25 @@ namespace Cobalt.Parser
             int position = offset;
             while (position < limit)
             {
-                int statementLimit = tokens.FindIndex(position, t => t.Type == TokenType.Semicolon);
                 Token token = tokens.ElementAt(position);
+                int statementLimit = tokens.FindIndex(position, t => t.Type == TokenType.Semicolon);
+                if (statementLimit < 0)
+                {
+                    throw new CobaltSyntaxError("Could not find a statement", token.SourceLine, token.PositionOnLine);
+                }
+                var statementTokens = tokens.GetRange(position, statementLimit - position);
                 switch (token.Type)
                 {
                     case TokenType.Declaration:
                         throw new NotImplementedException();
-                        break;
                     case TokenType.Identifier:
                         throw new NotImplementedException();
-                        break;
                     case TokenType.StandardInput:
                         throw new NotImplementedException();
-                        break;
                     case TokenType.StandardOutput:
                         throw new NotImplementedException();
-                        break;
                     default:
-                        throw new CobaltSyntaxError($"Expected a statement, bug got a {token.Type} token instead.", token.SourceLine);
+                        throw new CobaltSyntaxError($"Expected a statement, bug got a {token.Type} token instead.", token.SourceLine, token.PositionOnLine);
                 }
             }
 
