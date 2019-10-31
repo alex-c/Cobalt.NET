@@ -24,14 +24,21 @@ namespace Cobalt.Tokens
         public int SourceLine { get; }
 
         /// <summary>
+        /// The position on the source code line this token starts at.
+        /// </summary>
+        public int PositionOnLine { get; }
+
+        /// <summary>
         /// Creates a token of a given type from a given line in the source code.
         /// </summary>
         /// <param name="type">Type of the token to create.</param>
         /// <param name="sourceLine">Line in the source code the token has been parsed from.</param>
-        public Token(TokenType type, int sourceLine)
+        /// <param name="positionOnLine">Position on the source code line this token starts at</param>
+        public Token(TokenType type, int sourceLine, int positionOnLine)
         {
             Type = type;
             SourceLine = sourceLine;
+            PositionOnLine = positionOnLine;
             Data = new Dictionary<string, object>();
         }
 
@@ -79,7 +86,7 @@ namespace Cobalt.Tokens
         /// <returns>Returns a string representation of this token.</returns>
         public override string ToString()
         {
-            return $"({Type.ToString()}:{SourceLine})";
+            return $"({Type.ToString()}:{SourceLine},{PositionOnLine})";
         }
     }
 }

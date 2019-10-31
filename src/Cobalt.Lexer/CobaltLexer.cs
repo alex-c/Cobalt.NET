@@ -61,6 +61,7 @@ namespace Cobalt.Lexer
 
             int position = 0;
             int line = 1;
+            int positionOnLine = 0;
 
             while (position < code.Length)
             {
@@ -70,6 +71,7 @@ namespace Cobalt.Lexer
                 if (firstChar == ' ' || firstChar == '\t')
                 {
                     position++;
+                    positionOnLine++;
                 }
 
                 // Check for EOL
@@ -81,6 +83,7 @@ namespace Cobalt.Lexer
                     }
                     position++;
                     line++;
+                    positionOnLine = 0;
                 }
 
                 // Non whitespace/line break
@@ -89,48 +92,59 @@ namespace Cobalt.Lexer
                     switch (firstChar)
                     {
                         case ':':
-                            tokens.Add(new Token(TokenType.Colon, line));
+                            tokens.Add(new Token(TokenType.Colon, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case ';':
-                            tokens.Add(new Token(TokenType.Semicolon, line));
+                            tokens.Add(new Token(TokenType.Semicolon, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '&':
-                            tokens.Add(new Token(TokenType.And, line));
+                            tokens.Add(new Token(TokenType.And, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '|':
-                            tokens.Add(new Token(TokenType.Or, line));
+                            tokens.Add(new Token(TokenType.Or, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '=':
-                            tokens.Add(new Token(TokenType.Equal, line));
+                            tokens.Add(new Token(TokenType.Equal, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '!':
-                            tokens.Add(new Token(TokenType.Not, line));
+                            tokens.Add(new Token(TokenType.Not, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '<':
-                            tokens.Add(new Token(TokenType.Less, line));
+                            tokens.Add(new Token(TokenType.Less, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '>':
-                            tokens.Add(new Token(TokenType.Greater, line));
+                            tokens.Add(new Token(TokenType.Greater, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '+':
-                            tokens.Add(new Token(TokenType.Plus, line));
+                            tokens.Add(new Token(TokenType.Plus, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '-':
-                            tokens.Add(new Token(TokenType.Minus, line));
+                            tokens.Add(new Token(TokenType.Minus, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '*':
-                            tokens.Add(new Token(TokenType.Asterisk, line));
+                            tokens.Add(new Token(TokenType.Asterisk, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '/':
                             // Ignore content of EOL comments
@@ -156,21 +170,25 @@ namespace Cobalt.Lexer
                             }
                             else
                             {
-                                tokens.Add(new Token(TokenType.Slash, line));
+                                tokens.Add(new Token(TokenType.Slash, line, positionOnLine));
                                 position++;
+                                positionOnLine++;
                             }
                             break;
                         case '~':
-                            tokens.Add(new Token(TokenType.Tilde, line));
+                            tokens.Add(new Token(TokenType.Tilde, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case '(':
-                            tokens.Add(new Token(TokenType.LeftParenthesis, line));
+                            tokens.Add(new Token(TokenType.LeftParenthesis, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
                         case ')':
-                            tokens.Add(new Token(TokenType.RightParenthesis, line));
+                            tokens.Add(new Token(TokenType.RightParenthesis, line, positionOnLine));
                             position++;
+                            positionOnLine++;
                             break;
 
                         // Handle multi-char keywords, identifiers and values
@@ -191,44 +209,44 @@ namespace Cobalt.Lexer
                                 switch (nextWord)
                                 {
                                     case "def":
-                                        tokens.Add(new Token(TokenType.Declaration, line));
+                                        tokens.Add(new Token(TokenType.Declaration, line, positionOnLine));
                                         break;
                                     case "stdin":
-                                        tokens.Add(new Token(TokenType.StandardInput, line));
+                                        tokens.Add(new Token(TokenType.StandardInput, line, positionOnLine));
                                         break;
                                     case "stdout":
-                                        tokens.Add(new Token(TokenType.StandardOutput, line));
+                                        tokens.Add(new Token(TokenType.StandardOutput, line, positionOnLine));
                                         break;
                                     case "bool":
-                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Boolean, line));
+                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Boolean, line, positionOnLine));
                                         break;
                                     case "int":
-                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Integer, line));
+                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Integer, line, positionOnLine));
                                         break;
                                     case "float":
-                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Float, line));
+                                        tokens.Add(CreateTypeKeywordToken(CobaltType.Float, line, positionOnLine));
                                         break;
                                     case "true":
-                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, true, line));
+                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, true, line, positionOnLine));
                                         break;
                                     case "false":
-                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, false, line));
+                                        tokens.Add(CreateLiteralValueToken(CobaltType.Boolean, false, line, positionOnLine));
                                         break;
                                     default:
                                         // Try to parse number literals
                                         if (FloatRegex.Match(nextWord).Success && float.TryParse(nextWord, NumberStyles.Any, CultureInfo.InvariantCulture, out float floatValue))
                                         {
-                                            tokens.Add(CreateLiteralValueToken(CobaltType.Float, floatValue, line));
+                                            tokens.Add(CreateLiteralValueToken(CobaltType.Float, floatValue, line, positionOnLine));
                                         }
                                         else if (IntegerRegex.Match(nextWord).Success && int.TryParse(nextWord, out int intValue))
                                         {
-                                            tokens.Add(CreateLiteralValueToken(CobaltType.Integer, intValue, line));
+                                            tokens.Add(CreateLiteralValueToken(CobaltType.Integer, intValue, line, positionOnLine));
                                         }
 
                                         // Only identifiers are left to check!
                                         else if (IdentifierRegex.Match(nextWord).Success)
                                         {
-                                            tokens.Add(new Token(TokenType.Identifier, line));
+                                            tokens.Add(new Token(TokenType.Identifier, line, positionOnLine));
                                         }
                                         else
                                         {
@@ -239,6 +257,7 @@ namespace Cobalt.Lexer
 
                                 // Increment position in source code by word length
                                 position += nextWord.Length;
+                                positionOnLine += nextWord.Length;
                             }
                             else if (nextWordLimit == 0)
                             {
@@ -269,9 +288,9 @@ namespace Cobalt.Lexer
         /// <param name="type">The Cobalt type this is a keyword for.</param>
         /// <param name="line">The line in the source code where the token is from.</param>
         /// <returns>Returns the newly created token.</returns>
-        private Token CreateTypeKeywordToken(CobaltType type, int line)
+        private Token CreateTypeKeywordToken(CobaltType type, int line, int positionOnLine)
         {
-            Token token = new Token(TokenType.TypeKeyword, line);
+            Token token = new Token(TokenType.TypeKeyword, line, positionOnLine);
             token.SetData(TokenDataKeys.COBALT_TYPE, type);
             return token;
         }
@@ -283,9 +302,9 @@ namespace Cobalt.Lexer
         /// <param name="value">The literal value.</param>
         /// <param name="line">The line in the source code where the token is from.</param>
         /// <returns>Returns the newly created token.</returns>
-        private Token CreateLiteralValueToken(CobaltType type, object value, int line)
+        private Token CreateLiteralValueToken(CobaltType type, object value, int line, int positionOnLine)
         {
-            Token token = new Token(TokenType.LiteralValue, line);
+            Token token = new Token(TokenType.LiteralValue, line, positionOnLine);
             token.SetData(TokenDataKeys.COBALT_TYPE, type);
             token.SetData(TokenDataKeys.LITERAL_VALUE, value);
             return token;
@@ -311,22 +330,22 @@ namespace Cobalt.Lexer
                 }
                 else if (token.Type == TokenType.Equal && tokens.ElementAt(position + 1).Type == TokenType.Equal)
                 {
-                    result.Add(new Token(TokenType.Equals, token.SourceLine));
+                    result.Add(new Token(TokenType.Equals, token.SourceLine, token.PositionOnLine));
                     position += 2;
                 }
                 else if (token.Type == TokenType.Less && tokens.ElementAt(position + 1).Type == TokenType.Equal)
                 {
-                    result.Add(new Token(TokenType.EqualsOrLess, token.SourceLine));
+                    result.Add(new Token(TokenType.EqualsOrLess, token.SourceLine, token.PositionOnLine));
                     position += 2;
                 }
                 else if (token.Type == TokenType.Greater && tokens.ElementAt(position + 1).Type == TokenType.Equal)
                 {
-                    result.Add(new Token(TokenType.EqualsOrGreater, token.SourceLine));
+                    result.Add(new Token(TokenType.EqualsOrGreater, token.SourceLine, token.PositionOnLine));
                     position += 2;
                 }
                 else if (token.Type == TokenType.Not && tokens.ElementAt(position + 1).Type == TokenType.Equal)
                 {
-                    result.Add(new Token(TokenType.NotEquals, token.SourceLine));
+                    result.Add(new Token(TokenType.NotEquals, token.SourceLine, token.PositionOnLine));
                     position += 2;
                 }
                 else

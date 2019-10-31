@@ -74,6 +74,23 @@ namespace Cobalt.Test.Lexer
         }
 
         [Fact]
+        public void ShouldTrackPositionOnSourceLine()
+        {
+            ICollection<Token> tokens = Lexer.Tokenize("~\n~~\r~~~\r\n~~~~~");
+
+            Assert.Equal(0, tokens.ElementAt(0).PositionOnLine);
+            Assert.Equal(0, tokens.ElementAt(1).PositionOnLine);
+            Assert.Equal(1, tokens.ElementAt(2).PositionOnLine);
+            Assert.Equal(0, tokens.ElementAt(3).PositionOnLine);
+            Assert.Equal(1, tokens.ElementAt(4).PositionOnLine);
+            Assert.Equal(2, tokens.ElementAt(5).PositionOnLine);
+            Assert.Equal(0, tokens.ElementAt(6).PositionOnLine);
+            Assert.Equal(1, tokens.ElementAt(7).PositionOnLine);
+            Assert.Equal(2, tokens.ElementAt(8).PositionOnLine);
+            Assert.Equal(3, tokens.ElementAt(9).PositionOnLine);
+        }
+
+        [Fact]
         public void ShouldIgnoreEolComments()
         {
             ICollection<Token> tokens = Lexer.Tokenize("~//Hello this is an EOL comment and `~` is the Tilde character!\r\n~");
