@@ -9,7 +9,7 @@ using Xunit;
 namespace Cobalt.Test.Lexer
 {
     /// <summary>
-    /// Tests for the <see cref="CobaltLexer">CobaltLexer</see>.
+    /// Tests for the <see cref="CobaltLexer" />.
     /// </summary>
     public class LexerTests
     {
@@ -287,7 +287,10 @@ namespace Cobalt.Test.Lexer
             ICollection<Token> tokens = Lexer.Tokenize(identifier);
 
             Assert.Single(tokens);
-            Assert.Equal(TokenType.Identifier, tokens.First().Type);
+
+            Token token = tokens.First();
+            Assert.Equal(TokenType.Identifier, token.Type);
+            Assert.Equal(identifier.Substring(0, identifier.Length - 1), token.GetData<string>(TokenDataKeys.IDENTIFIER_NAME));
         }
 
         [Theory]

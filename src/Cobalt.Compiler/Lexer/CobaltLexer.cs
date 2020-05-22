@@ -246,7 +246,7 @@ namespace Cobalt.Compiler.Lexer
                                         // Only identifiers are left to check!
                                         else if (IdentifierRegex.Match(nextWord).Success)
                                         {
-                                            tokens.Add(new Token(TokenType.Identifier, line, positionOnLine));
+                                            tokens.Add(CreateIdentifierToken(nextWord, line, positionOnLine));
                                         }
                                         else
                                         {
@@ -287,6 +287,7 @@ namespace Cobalt.Compiler.Lexer
         /// </summary>
         /// <param name="type">The Cobalt type this is a keyword for.</param>
         /// <param name="line">The line in the source code where the token is from.</param>
+        /// <param name="positionOnLine">The position on the source code line.</param>
         /// <returns>Returns the newly created token.</returns>
         private Token CreateTypeKeywordToken(CobaltType type, int line, int positionOnLine)
         {
@@ -301,12 +302,27 @@ namespace Cobalt.Compiler.Lexer
         /// <param name="type">The Cobalt type of the literal vbalue.</param>
         /// <param name="value">The literal value.</param>
         /// <param name="line">The line in the source code where the token is from.</param>
+        /// <param name="positionOnLine">The position on the source code line.</param>
         /// <returns>Returns the newly created token.</returns>
         private Token CreateLiteralValueToken(CobaltType type, object value, int line, int positionOnLine)
         {
             Token token = new Token(TokenType.LiteralValue, line, positionOnLine);
             token.SetData(TokenDataKeys.COBALT_TYPE, type);
             token.SetData(TokenDataKeys.LITERAL_VALUE, value);
+            return token;
+        }
+
+        /// <summary>
+        /// Creates an identifier token.
+        /// </summary>
+        /// <param name="identifier">The identifier name.</param>
+        /// <param name="line">The line in the source code where the token is from.</param>
+        /// <param name="positionOnLine">The position on the source code line.</param>
+        /// <returns>Returns the newly created token</returns>
+        private Token CreateIdentifierToken(string identifier, int line, int positionOnLine)
+        {
+            Token token = new Token(TokenType.Identifier, line, positionOnLine);
+            token.SetData(TokenDataKeys.IDENTIFIER_NAME, identifier);
             return token;
         }
 
