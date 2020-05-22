@@ -1,4 +1,5 @@
 ﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.AbstractSyntaxTree.Expressions;
 using Cobalt.AbstractSyntaxTree.Leafs;
 using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Tokens;
@@ -80,14 +81,17 @@ namespace Cobalt.Compiler.Parser
                 switch (token.Type)
                 {
                     case TokenType.Declaration:
-                        throw new NotImplementedException();
+                        statementNode = ParseVariableDeclarationStatement(statementTokens);
+                        break;
                     case TokenType.Identifier:
-                        throw new NotImplementedException();
+                        statementNode = ParseVariableAssignmentStatement(statementTokens);
+                        break;
                     case TokenType.StandardInput:
                         statementNode = ParseStandardInputStatement(statementTokens);
                         break;
                     case TokenType.StandardOutput:
-                        throw new NotImplementedException();
+                        statementNode = ParseStandardOutputStatement(statementTokens);
+                        break;
                     default:
                         throw new CobaltSyntaxError($"Expected a statement, but got a {token.Type} token instead.", token.SourceLine, token.PositionOnLine);
                 }
@@ -114,6 +118,33 @@ namespace Cobalt.Compiler.Parser
 
             // Create and return input statement node
             return new StandardInputStatementNode(tokens.First().SourceLine, identifierNode);
+        }
+
+        private StatementNode ParseStandardOutputStatement(List<Token> tokens)
+        {
+            if (tokens.Count <= 2 ||
+                tokens.ElementAt(0).Type != TokenType.StandardOutput ||
+                tokens.ElementAt(1).Type != TokenType.Equal)
+            {
+                throw new CobaltSyntaxError($"Ivalid standard output statement.", tokens.First().SourceLine, tokens.First().PositionOnLine);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private StatementNode ParseVariableDeclarationStatement(List<Token> tokens)
+        {
+            throw new NotImplementedException();
+        }
+
+        private StatementNode ParseVariableAssignmentStatement(List<Token> tokens)
+        {
+            throw new NotImplementedException();
+        }
+
+        private ExpressionNode ParseExpression(List<Token> tokens)
+        {
+            throw new NotImplementedException();
         }
     }
 }
