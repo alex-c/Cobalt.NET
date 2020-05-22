@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cobalt.Compiler\Cobalt.Compiler.csproj" />
+    <ProjectReference Include="..\targets\Cobalt.Target.JavaScript\Cobalt.Target.JavaScript.csproj" />
   </ItemGroup>
 
 </Project>

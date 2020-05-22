@@ -1,4 +1,5 @@
 ﻿using Cobalt.Compiler;
+using Cobalt.Target.JavaScript;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -62,18 +63,42 @@ namespace Cobalt
             // Display information in verbose mode
             logger.LogDebug("Compiler parameters:");
             logger.LogDebug($" - Input file: {inputFile}");
-            logger.LogDebug($" - Input dir: {outputDir}");
+            logger.LogDebug($" - Output dir: {outputDir}");
             logger.LogDebug($" - Target: {target}");
-            
-            // Set up compiler
-            CobaltCompiler compiler = new CobaltCompiler(loggerFactory);
-            // TODO: add target code generator
 
-            // TODO: rad code from input file
-            string code = "TODO!";
+            // Set up compiler backend
+            ICompilerBackend backend = null;
+            switch (target.ToLowerInvariant())
+            {
+                case "js":
+                case "javascript":
+                    backend = new JavaScriptCodeGenerator();
+                    break;
+                default:
+                    logger.LogError($"Unknown target platform `{target}`.");
+                    break;
+            }
 
-            // Compile!
-            compiler.Compile(code);
+            if (backend != null)
+            {
+                try
+                {
+                    // Set up compiler
+                    CobaltCompiler compiler = new CobaltCompiler(loggerFactory, backend);
+
+                    // TODO: rad code from input file
+                    string sourceCode = "TODO!";
+
+                    // Compile!
+                    string targetCode = compiler.Compile(sourceCode);
+
+                    // TODO: write to output file
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError("Compilation failed.");
+                }
+            }
 
             // TODO: remove this
             Console.ReadLine();
