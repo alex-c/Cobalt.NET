@@ -28,9 +28,20 @@ namespace Cobalt
                 loggerConfiguration.MinimumLevel.Information();
             }
 
+            // Set output template depending on verbose mode
+            string outputTemplate = null;
+            if (verbose)
+            {
+                outputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}][{SourceContext}] {Message:lj}{NewLine}{Exception}";
+            }
+            else
+            {
+                outputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+            }
+
             // Set up Serilog logger
             Log.Logger = loggerConfiguration
-                .WriteTo.Console()
+                .WriteTo.Console(outputTemplate: outputTemplate)
                 .CreateLogger();
 
             // Return a .NET Core logging factory

@@ -71,7 +71,7 @@ namespace Cobalt.Compiler.Parser
                 int statementLimit = tokens.FindIndex(position, t => t.Type == TokenType.Semicolon);
                 if (statementLimit < 0)
                 {
-                    throw new CobaltSyntaxError("Could not find a statement", token.SourceLine, token.PositionOnLine);
+                    throw new CobaltSyntaxError("Could not find a statement.", token.SourceLine, token.PositionOnLine);
                 }
                 var statementTokens = tokens.GetRange(position, statementLimit - position);
                 switch (token.Type)

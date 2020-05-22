@@ -96,12 +96,21 @@ namespace Cobalt
                 }
                 catch (Exception exception)
                 {
-                    logger.LogError("Compilation failed.");
+                    if (verbose)
+                    {
+                        logger.LogError($"Compilation failed with {exception.Message}{Environment.NewLine}{exception.StackTrace}");
+                    }
+                    else
+                    {
+                        logger.LogError("Compilation failed.", exception);
+                    }
+                    logger.LogInformation("Press any key to terminate...");
+                    Console.Read();
                 }
             }
 
             // TODO: remove this
-            Console.ReadLine();
+            Console.Read();
         }
 
         /// <summary>
