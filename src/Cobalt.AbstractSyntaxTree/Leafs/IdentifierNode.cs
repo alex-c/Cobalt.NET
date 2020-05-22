@@ -2,16 +2,16 @@
 {
     public class IdentifierNode : AstNode
     {
-        public string Identifier { get; }
+        public string IdentifierName { get; }
 
-        public IdentifierNode(int sourceLine, string identifier) : base(sourceLine)
+        public IdentifierNode(int sourceLine, string identifierName) : base(sourceLine)
         {
-            Identifier = identifier;
+            IdentifierName = identifierName;
         }
 
         public override string ToString()
         {
-            return $"{GetType().Name}(`{Identifier}`)";
+            return $"{GetType().Name}(`{IdentifierName}`)";
         }
     }
 }

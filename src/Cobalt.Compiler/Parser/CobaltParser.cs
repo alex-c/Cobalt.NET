@@ -1,4 +1,6 @@
 ﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.AbstractSyntaxTree.Leafs;
+using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Tokens;
 using Cobalt.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -57,7 +59,7 @@ namespace Cobalt.Compiler.Parser
             // Validate arguments
             if (offset < 0 || limit <= offset || limit > tokens.Count())
             {
-                throw new CompilerException($"CobaltParser.ParseCodeBlock called with bad offset and/or limit parameters (offset: {offset}, limit: {limit}).");
+                throw new CompilerException($"`CobaltParser.ParseCodeBlock` called with bad offset and/or limit parameters (offset: {offset}, limit: {limit}).");
             }
 
             // Initialize code block node
@@ -71,9 +73,10 @@ namespace Cobalt.Compiler.Parser
                 int statementLimit = tokens.FindIndex(position, t => t.Type == TokenType.Semicolon);
                 if (statementLimit < 0)
                 {
-                    throw new CobaltSyntaxError("Could not find a statement.", token.SourceLine, token.PositionOnLine);
+                    throw new CobaltSyntaxError("Could not find a valid statement. Are you missing a semicolon?", token.SourceLine, token.PositionOnLine);
                 }
-                var statementTokens = tokens.GetRange(position, statementLimit - position);
+                List<Token> statementTokens = tokens.GetRange(position, statementLimit - position);
+                StatementNode statementNode = null;
                 switch (token.Type)
                 {
                     case TokenType.Declaration:
@@ -81,16 +84,36 @@ namespace Cobalt.Compiler.Parser
                     case TokenType.Identifier:
                         throw new NotImplementedException();
                     case TokenType.StandardInput:
-                        throw new NotImplementedException();
+                        statementNode = ParseStandardInputStatement(statementTokens);
+                        break;
                     case TokenType.StandardOutput:
                         throw new NotImplementedException();
                     default:
-                        throw new CobaltSyntaxError($"Expected a statement, bug got a {token.Type} token instead.", token.SourceLine, token.PositionOnLine);
+                        throw new CobaltSyntaxError($"Expected a statement, but got a {token.Type} token instead.", token.SourceLine, token.PositionOnLine);
                 }
+                codeBlock.Statements.Add(statementNode);
+                position = statementLimit + 1;
             }
 
             // Reached end of the code block, return
             return codeBlock;
+        }
+
+        private StatementNode ParseStandardInputStatement(List<Token> tokens)
+        {
+            if (tokens.Count != 2 ||
+                tokens.ElementAt(0).Type != TokenType.StandardInput ||
+                tokens.ElementAt(1).Type != TokenType.Identifier)
+            {
+                throw new CobaltSyntaxError($"Ivalid standard input statement.", tokens.First().SourceLine, tokens.First().PositionOnLine);
+            }
+
+            // Create identifier node
+            string identifier = tokens.Last().GetData<string>(TokenDataKeys.IDENTIFIER_NAME);
+            IdentifierNode identifierNode = new IdentifierNode(tokens.Last().SourceLine, identifier);
+
+            // Create and return input statement node
+            return new StandardInputStatementNode(tokens.First().SourceLine, identifierNode);
         }
     }
 }
