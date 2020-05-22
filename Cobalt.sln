@@ -1,25 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.852
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt", "src\Cobalt\Cobalt.csproj", "{2585D54F-AFF8-4816-A65D-180A429FF311}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Lexer", "src\Cobalt.Lexer\Cobalt.Lexer.csproj", "{81EAE11F-CC93-4D25-B1F9-A3250723FE82}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Parser", "src\Cobalt.Parser\Cobalt.Parser.csproj", "{DFFABA54-EFCF-4EFA-8CB2-F0FB413A9DBC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Tokens", "src\Cobalt.Tokens\Cobalt.Tokens.csproj", "{A184AEED-7DF3-4E55-98EC-A6054EBE2703}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.AbstractSyntaxTree", "src\Cobalt.AbstractSyntaxTree\Cobalt.AbstractSyntaxTree.csproj", "{7F3895DF-573A-4AE5-B1CF-1785BC08BFF2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Target.JavaScript", "src\targets\Cobalt.Target.JavaScript\Cobalt.Target.JavaScript.csproj", "{B03863E3-D3A3-43BC-B617-B6C6E5251649}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Exceptions", "src\Cobalt.Exceptions\Cobalt.Exceptions.csproj", "{0CE5E2BF-7DE9-4911-B500-9A2F2C04766E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Test.Lexer", "test\Cobalt.Test.Lexer\Cobalt.Test.Lexer.csproj", "{AE0BD74F-A2CD-40AC-AB7A-335A411074E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cobalt.Compiler", "src\Cobalt.Compiler\Cobalt.Compiler.csproj", "{23E5E3AD-6205-4187-977A-158CC27B1685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Compiler", "src\Cobalt.Compiler\Cobalt.Compiler.csproj", "{23E5E3AD-6205-4187-977A-158CC27B1685}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,18 +23,6 @@ Global
 		{2585D54F-AFF8-4816-A65D-180A429FF311}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2585D54F-AFF8-4816-A65D-180A429FF311}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2585D54F-AFF8-4816-A65D-180A429FF311}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81EAE11F-CC93-4D25-B1F9-A3250723FE82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81EAE11F-CC93-4D25-B1F9-A3250723FE82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81EAE11F-CC93-4D25-B1F9-A3250723FE82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81EAE11F-CC93-4D25-B1F9-A3250723FE82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFFABA54-EFCF-4EFA-8CB2-F0FB413A9DBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFFABA54-EFCF-4EFA-8CB2-F0FB413A9DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFFABA54-EFCF-4EFA-8CB2-F0FB413A9DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFFABA54-EFCF-4EFA-8CB2-F0FB413A9DBC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A184AEED-7DF3-4E55-98EC-A6054EBE2703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A184AEED-7DF3-4E55-98EC-A6054EBE2703}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A184AEED-7DF3-4E55-98EC-A6054EBE2703}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A184AEED-7DF3-4E55-98EC-A6054EBE2703}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F3895DF-573A-4AE5-B1CF-1785BC08BFF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F3895DF-573A-4AE5-B1CF-1785BC08BFF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F3895DF-573A-4AE5-B1CF-1785BC08BFF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,10 +31,6 @@ Global
 		{B03863E3-D3A3-43BC-B617-B6C6E5251649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B03863E3-D3A3-43BC-B617-B6C6E5251649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B03863E3-D3A3-43BC-B617-B6C6E5251649}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0CE5E2BF-7DE9-4911-B500-9A2F2C04766E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CE5E2BF-7DE9-4911-B500-9A2F2C04766E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CE5E2BF-7DE9-4911-B500-9A2F2C04766E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CE5E2BF-7DE9-4911-B500-9A2F2C04766E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE0BD74F-A2CD-40AC-AB7A-335A411074E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE0BD74F-A2CD-40AC-AB7A-335A411074E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE0BD74F-A2CD-40AC-AB7A-335A411074E5}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -2,17 +2,23 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>cobaltc</AssemblyName>
     <Version>0.1.0</Version>
     <Authors>Alexandre Charoy</Authors>
     <Description>`cobaltc` is a compiler for the Cobalt programming language.</Description>
+    <PackageProjectUrl>https://github.com/alex-c/Cobalt.NET</PackageProjectUrl>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageLicenseExpression>GPL-3.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/alex-c/Cobalt.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>compiler, cobalt-lang</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using Cobalt.Exceptions;
 using System.Collections.Generic;
 
-namespace Cobalt.Tokens
+namespace Cobalt.Compiler.Tokens
 {
     /// <summary>
     /// Represents a token of the Cobalt language.

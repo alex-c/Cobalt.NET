@@ -1,5 +1,5 @@
-﻿using Cobalt.Exceptions;
-using Cobalt.Tokens;
+﻿using Cobalt.Compiler.Tokens;
+using Cobalt.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Cobalt.Lexer
+namespace Cobalt.Compiler.Lexer
 {
     /// <summary>
     /// A lexer for the Cobalt programming language.

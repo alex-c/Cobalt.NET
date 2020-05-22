@@ -5,12 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cobalt.Lexer\Cobalt.Lexer.csproj" />
-    <ProjectReference Include="..\Cobalt.Parser\Cobalt.Parser.csproj" />
+    <ProjectReference Include="..\Cobalt.AbstractSyntaxTree\Cobalt.AbstractSyntaxTree.csproj" />
   </ItemGroup>
 
 </Project>

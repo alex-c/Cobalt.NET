@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cobalt.Exceptions\Cobalt.Exceptions.csproj" />
-    <ProjectReference Include="..\Cobalt.Tokens\Cobalt.Tokens.csproj" />
   </ItemGroup>
 
 </Project>

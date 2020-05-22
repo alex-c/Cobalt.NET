@@ -1,12 +1,12 @@
 ﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.Compiler.Tokens;
 using Cobalt.Exceptions;
-using Cobalt.Tokens;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cobalt.Parser
+namespace Cobalt.Compiler.Parser
 {
     /// <summary>
     /// A parser for the Cobalt programming language.

@@ -1,4 +1,4 @@
-﻿namespace Cobalt.Tokens
+﻿namespace Cobalt.Compiler.Tokens
 {
     /// <summary>
     /// Represents a primitive data type of Cobalt.

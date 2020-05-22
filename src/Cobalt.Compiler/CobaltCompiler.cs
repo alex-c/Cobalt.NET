@@ -1,7 +1,7 @@
 ﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.Compiler.Lexer;
+using Cobalt.Compiler.Parser;
 using Cobalt.Exceptions;
-using Cobalt.Lexer;
-using Cobalt.Parser;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
