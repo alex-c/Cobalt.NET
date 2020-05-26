@@ -1,12 +1,14 @@
 ﻿using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Expressions;
+using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
+using Cobalt.AbstractSyntaxTree.Expressions.LiteralValues;
+using Cobalt.AbstractSyntaxTree.Expressions.UnaryExpressions;
 using Cobalt.AbstractSyntaxTree.Leafs;
 using Cobalt.AbstractSyntaxTree.Leafs.TypeNodes;
 using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Tokens;
 using Cobalt.Exceptions;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -128,15 +130,13 @@ namespace Cobalt.Compiler.Parser
 
         private StatementNode ParseStandardOutputStatement(List<Token> tokens)
         {
-            if (tokens.Count <= 2 ||
-                tokens.ElementAt(0).Type != TokenType.StandardOutput ||
-                tokens.ElementAt(1).Type != TokenType.Equal)
+            if (tokens.Count <= 1 || tokens.ElementAt(0).Type != TokenType.StandardOutput)
             {
                 throw new CobaltSyntaxError($"Ivalid standard output statement.", tokens.First().SourceLine, tokens.First().PositionOnLine);
             }
 
             // Parse expression
-            ExpressionNode expression = ParseExpression(tokens.GetRange(2, tokens.Count - 2));
+            ExpressionNode expression = ParseExpression(tokens.GetRange(1, tokens.Count - 1));
 
             // Create and return output statement node
             return new StandardOutputStatementNode(tokens.First().SourceLine)
@@ -219,10 +219,201 @@ namespace Cobalt.Compiler.Parser
 
         #endregion
 
+        #region Expressions
+
         private ExpressionNode ParseExpression(List<Token> tokens)
         {
-            throw new NotImplementedException();
+            if (tokens.Count == 0)
+            {
+                throw new CobaltSyntaxError("Empty expression.");
+            }
+
+            Stack<Token> operatorStack = new Stack<Token>();
+            Stack<AstNode> outputStack = new Stack<AstNode>();
+
+            foreach (Token token in tokens)
+            {
+                switch (token.Type)
+                {
+                    case TokenType.Identifier:
+                        outputStack.Push(ParseIdentifier(token));
+                        break;
+                    case TokenType.LiteralValue:
+                        outputStack.Push(ParseLitealValue(token));
+                        break;
+                    case TokenType.LeftParenthesis:
+                        operatorStack.Push(token);
+                        break;
+                    case TokenType.And:
+                    case TokenType.Or:
+                    case TokenType.Not:
+                    case TokenType.Equals:
+                    case TokenType.NotEquals:
+                    case TokenType.Less:
+                    case TokenType.Greater:
+                    case TokenType.EqualsOrLess:
+                    case TokenType.EqualsOrGreater:
+                    case TokenType.Plus:
+                    case TokenType.Minus:
+                    case TokenType.Asterisk:
+                    case TokenType.Slash:
+                    case TokenType.Tilde:
+                        while (operatorStack.Any() && token.GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE) <= operatorStack.Last().GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE))
+                        {
+                            Token operatorToken = operatorStack.Pop();
+                            int operatorArity = operatorToken.GetData<int>(TokenDataKeys.OPERATOR_ARITY);
+                            switch (operatorArity)
+                            {
+                                case 1:
+                                    AstNode operand = outputStack.Pop();
+                                    outputStack.Push(ParseUnaryExpression(operatorToken, operand));
+                                    break;
+                                case 2:
+                                    AstNode rightOperand = outputStack.Pop();
+                                    AstNode leftOperand = outputStack.Pop();
+                                    outputStack.Push(ParseBinaryExpresssion(operatorToken, leftOperand, rightOperand));
+                                    break;
+                                default:
+                                    throw new CompilerException($"Operator has illegal arity {operatorArity}.");
+                            }
+                        }
+                        break;
+                    case TokenType.RightParenthesis:
+                        while (operatorStack.Any() && operatorStack.Last().Type != TokenType.LeftParenthesis)
+                        {
+                            Token operatorToken = operatorStack.Pop();
+                            int operatorArity = operatorToken.GetData<int>(TokenDataKeys.OPERATOR_ARITY);
+                            switch (operatorArity)
+                            {
+                                case 1:
+                                    AstNode operand = outputStack.Pop();
+                                    outputStack.Push(ParseUnaryExpression(operatorToken, operand));
+                                    break;
+                                case 2:
+                                    AstNode rightOperand = outputStack.Pop();
+                                    AstNode leftOperand = outputStack.Pop();
+                                    outputStack.Push(ParseBinaryExpresssion(operatorToken, leftOperand, rightOperand));
+                                    break;
+                                default:
+                                    throw new CompilerException($"Operator has illegal arity {operatorArity}.");
+                            }
+                        }
+                        if (operatorStack.Last().Type != TokenType.LeftParenthesis)
+                        {
+                            throw new CobaltSyntaxError("Parantheses missmatched in expression.", token.SourceLine, token.PositionOnLine);
+                        }
+                        operatorStack.Pop();
+                        break;
+                    default:
+                        throw new CobaltSyntaxError($"Illegal token of type `{token.Type}` in expression.", token.SourceLine, token.PositionOnLine);
+                }
+            }
+            while (operatorStack.Any())
+            {
+                Token operatorToken = operatorStack.Pop();
+                if (operatorToken.Type == TokenType.LeftParenthesis || operatorToken.Type == TokenType.RightParenthesis)
+                {
+                    throw new CobaltSyntaxError("Parantheses missmatched in expression.", operatorToken.SourceLine, operatorToken.PositionOnLine);
+                }
+                int operatorArity = operatorToken.GetData<int>(TokenDataKeys.OPERATOR_ARITY);
+                switch (operatorArity)
+                {
+                    case 1:
+                        AstNode operand = outputStack.Pop();
+                        outputStack.Push(ParseUnaryExpression(operatorToken, operand));
+                        break;
+                    case 2:
+                        AstNode rightOperand = outputStack.Pop();
+                        AstNode leftOperand = outputStack.Pop();
+                        outputStack.Push(ParseBinaryExpresssion(operatorToken, leftOperand, rightOperand));
+                        break;
+                    default:
+                        throw new CompilerException($"Operator has illegal arity {operatorArity}.");
+                }
+            }
+            if (outputStack.Count == 1)
+            {
+                AstNode result = outputStack.Pop();
+                switch (result)
+                {
+                    case UnaryExpressionNode unaryExpression:
+                        return unaryExpression;
+                    case BinaryExpressionNode binaryExpression:
+                        return binaryExpression;
+                    case LiteralValueNode _:
+                    case IdentifierNode _:
+                        return new SingleLeafExpressionNode(result.SourceLine)
+                        {
+                            Leaf = result
+                        };
+                    default:
+                        throw new CompilerException($"Illegal node left on output stack after parsing expression: `{result.GetType()}`");
+                }
+            }
+            else
+            {
+                throw new CompilerException("Parsing expression failed, more than one element left on the output stack.");
+            }
         }
+
+        private UnaryExpressionNode ParseUnaryExpression(Token operatorToken, AstNode operand)
+        {
+            UnaryExpressionNode expression = null;
+            switch (operatorToken.Type)
+            {
+                case TokenType.Not:
+                    expression = new LogicalNegationNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Tilde:
+                    expression = new ArithmeticNegationNode(operatorToken.SourceLine);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with a bad token. Expected an unary operator, token has type `{operatorToken.Type}` instead.");
+            }
+            expression.Operand = operand;
+            return expression;
+        }
+
+        private BinaryExpressionNode ParseBinaryExpresssion(Token operatorToken, AstNode leftOperand, AstNode rightOperand)
+        {
+            BinaryExpressionNode expression = null;
+            switch (operatorToken.Type)
+            {
+                case TokenType.Plus:
+                    expression = new AdditionNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Minus:
+                    expression = new SubstractionNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Asterisk:
+                    expression = new MultiplicationNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Slash:
+                    expression = new DivisionNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Equals:
+                case TokenType.NotEquals:
+                case TokenType.Less:
+                case TokenType.EqualsOrLess:
+                case TokenType.Greater:
+                case TokenType.EqualsOrGreater:
+                    expression = new ComparisonNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.And:
+                    expression = new LogicalAndNode(operatorToken.SourceLine);
+                    break;
+                case TokenType.Or:
+                    expression = new LogicalOrNode(operatorToken.SourceLine);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with a bad token. Expected a binary operator, token has type `{operatorToken.Type}` instead.");
+            }
+            expression.LeftOperand = leftOperand;
+            expression.RightOperand = rightOperand;
+            return expression;
+        }
+
+        #endregion
 
         #region Leaf nodes
 
@@ -259,12 +450,40 @@ namespace Cobalt.Compiler.Parser
                         break;
                     default:
                         throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with unknown Cobalt type `{cobaltType}`.");
-                }                
+                }
                 return type;
             }
             else
             {
                 throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with a bad token. Expected a token of type `{TokenType.TypeKeyword}`, got token of type `{token.Type}` instead.");
+            }
+        }
+
+        private LiteralValueNode ParseLitealValue(Token token)
+        {
+            if (token.Type == TokenType.LiteralValue)
+            {
+                LiteralValueNode value = null;
+                CobaltType cobaltType = token.GetData<CobaltType>(TokenDataKeys.COBALT_TYPE);
+                switch (cobaltType)
+                {
+                    case CobaltType.Boolean:
+                        value = new BooleanValueNode(token.SourceLine, token.GetData<bool>(TokenDataKeys.LITERAL_VALUE));
+                        break;
+                    case CobaltType.Float:
+                        value = new FloatValueNode(token.SourceLine, token.GetData<float>(TokenDataKeys.LITERAL_VALUE));
+                        break;
+                    case CobaltType.Integer:
+                        value = new IntegerValueNode(token.SourceLine, token.GetData<int>(TokenDataKeys.LITERAL_VALUE));
+                        break;
+                    default:
+                        throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with unknown Cobalt type `{cobaltType}`.");
+                }
+                return value;
+            }
+            else
+            {
+                throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with a bad token. Expected a token of type `{TokenType.LiteralValue}`, got token of type `{token.Type}` instead.");
             }
         }
 

@@ -2,7 +2,7 @@
 {
     public class AstNode
     {
-        private int SourceLine { get; }
+        public int SourceLine { get; }
 
         public bool DefinesScope { get; }
 
