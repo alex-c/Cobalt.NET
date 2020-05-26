@@ -59,7 +59,7 @@ namespace Cobalt.Compiler.Parser
             return program;
         }
 
-        private CodeBlockNode ParseCodeBlock(List<Token> tokens, int offset, int limit)
+        public CodeBlockNode ParseCodeBlock(List<Token> tokens, int offset, int limit)
         {
             // Validate arguments
             if (offset < 0 || limit <= offset || limit > tokens.Count())
@@ -128,7 +128,7 @@ namespace Cobalt.Compiler.Parser
             };
         }
 
-        private StatementNode ParseStandardOutputStatement(List<Token> tokens)
+        public StatementNode ParseStandardOutputStatement(List<Token> tokens)
         {
             if (tokens.Count <= 1 || tokens.ElementAt(0).Type != TokenType.StandardOutput)
             {
@@ -145,7 +145,7 @@ namespace Cobalt.Compiler.Parser
             };
         }
 
-        private StatementNode ParseVariableDeclarationStatement(List<Token> tokens)
+        public StatementNode ParseVariableDeclarationStatement(List<Token> tokens)
         {
             if (tokens.Count <= 4 ||
                 tokens.ElementAt(0).Type != TokenType.Declaration ||
@@ -192,7 +192,7 @@ namespace Cobalt.Compiler.Parser
             };
         }
 
-        private StatementNode ParseVariableAssignmentStatement(List<Token> tokens)
+        public StatementNode ParseVariableAssignmentStatement(List<Token> tokens)
         {
             if (tokens.Count <= 4 ||
                 tokens.ElementAt(0).Type != TokenType.Declaration ||
@@ -221,7 +221,7 @@ namespace Cobalt.Compiler.Parser
 
         #region Expressions
 
-        private ExpressionNode ParseExpression(List<Token> tokens)
+        public ExpressionNode ParseExpression(List<Token> tokens)
         {
             if (tokens.Count == 0)
             {
@@ -356,7 +356,7 @@ namespace Cobalt.Compiler.Parser
             }
         }
 
-        private UnaryExpressionNode ParseUnaryExpression(Token operatorToken, AstNode operand)
+        public UnaryExpressionNode ParseUnaryExpression(Token operatorToken, AstNode operand)
         {
             UnaryExpressionNode expression = null;
             switch (operatorToken.Type)
@@ -374,7 +374,7 @@ namespace Cobalt.Compiler.Parser
             return expression;
         }
 
-        private BinaryExpressionNode ParseBinaryExpresssion(Token operatorToken, AstNode leftOperand, AstNode rightOperand)
+        public BinaryExpressionNode ParseBinaryExpresssion(Token operatorToken, AstNode leftOperand, AstNode rightOperand)
         {
             BinaryExpressionNode expression = null;
             switch (operatorToken.Type)
@@ -417,7 +417,7 @@ namespace Cobalt.Compiler.Parser
 
         #region Leaf nodes
 
-        private IdentifierNode ParseIdentifier(Token token)
+        public IdentifierNode ParseIdentifier(Token token)
         {
             if (token.Type == TokenType.Identifier)
             {
@@ -431,7 +431,7 @@ namespace Cobalt.Compiler.Parser
             }
         }
 
-        private TypeNode ParseTypeKeyword(Token token)
+        public TypeNode ParseTypeKeyword(Token token)
         {
             if (token.Type == TokenType.TypeKeyword)
             {
@@ -459,7 +459,7 @@ namespace Cobalt.Compiler.Parser
             }
         }
 
-        private LiteralValueNode ParseLitealValue(Token token)
+        public LiteralValueNode ParseLitealValue(Token token)
         {
             if (token.Type == TokenType.LiteralValue)
             {
