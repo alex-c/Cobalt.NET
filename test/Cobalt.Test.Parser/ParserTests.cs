@@ -1,5 +1,6 @@
 using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Expressions;
+using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
 using Cobalt.AbstractSyntaxTree.Expressions.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Leafs;
 using Cobalt.AbstractSyntaxTree.Leafs.TypeNodes;
@@ -225,6 +226,61 @@ namespace Cobalt.Test.Parser
             {
                 throw new XunitException("Wrong expression type.");
             }
+        }
+
+        [Theory]
+        [InlineData(TokenType.Plus, 4)]
+        [InlineData(TokenType.Minus, 4)]
+        [InlineData(TokenType.Asterisk, 5)]
+        [InlineData(TokenType.Slash, 5)]
+        public void ShouldParseArithmeticExpressions(TokenType operatorType, int precedence)
+        {
+            // Arrange
+            List<Token> tokens = new List<Token>()
+            {
+                new Token(TokenType.Identifier, 1, 0),
+                new Token(operatorType, 1, 4),
+                new Token(TokenType.Identifier, 1, 5)
+            };
+            tokens.First().SetData(TokenDataKeys.IDENTIFIER_NAME, "left");
+            tokens.Last().SetData(TokenDataKeys.IDENTIFIER_NAME, "right");
+            Token operatorToken = tokens.ElementAt(1);
+            operatorToken.SetData(TokenDataKeys.OPERATOR_ARITY, 2);
+            operatorToken.SetData(TokenDataKeys.OPERATOR_PRECEDENCE, precedence);
+
+            // Act
+            ExpressionNode expression = Parser.ParseExpression(tokens);
+
+            // Assert
+            if (expression is BinaryExpressionNode binaryExpression)
+            {
+                Assert.True(binaryExpression.LeftOperand is IdentifierNode);
+                Assert.True(binaryExpression.RightOperand is IdentifierNode);
+                Assert.Equal("left", ((IdentifierNode)binaryExpression.LeftOperand).IdentifierName);
+                Assert.Equal("right", ((IdentifierNode)binaryExpression.RightOperand).IdentifierName);
+                switch (operatorType)
+                {
+                    case TokenType.Plus:
+                        Assert.True(binaryExpression is AdditionNode);
+                        break;
+                    case TokenType.Minus:
+                        Assert.True(binaryExpression is SubstractionNode);
+                        break;
+                    case TokenType.Asterisk:
+                        Assert.True(binaryExpression is MultiplicationNode);
+                        break;
+                    case TokenType.Slash:
+                        Assert.True(binaryExpression is DivisionNode);
+                        break;
+                    default:
+                        throw new XunitException("No test implemented for this operator type.");
+                }
+            }
+            else
+            {
+                throw new XunitException("Wrong expression type.");
+            }
+
         }
 
         #endregion

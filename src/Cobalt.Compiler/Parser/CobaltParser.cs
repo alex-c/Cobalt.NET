@@ -277,6 +277,7 @@ namespace Cobalt.Compiler.Parser
                                     throw new CompilerException($"Operator has illegal arity {operatorArity}.");
                             }
                         }
+                        operatorStack.Push(token);
                         break;
                     case TokenType.RightParenthesis:
                         while (operatorStack.Any() && operatorStack.Last().Type != TokenType.LeftParenthesis)
