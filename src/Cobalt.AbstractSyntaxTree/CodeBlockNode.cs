@@ -1,4 +1,5 @@
 ﻿using Cobalt.AbstractSyntaxTree.Statements;
+using System;
 using System.Collections.Generic;
 
 namespace Cobalt.AbstractSyntaxTree
@@ -10,6 +11,16 @@ namespace Cobalt.AbstractSyntaxTree
         public CodeBlockNode(int sourceLine) : base(sourceLine)
         {
             Statements = new List<StatementNode>();
+        }
+
+        public override string ToString()
+        {
+            string code = "";
+            foreach (StatementNode statement in Statements)
+            {
+                code += $"  {statement}{Environment.NewLine}";
+            }
+            return $"{GetType().Name}({Environment.NewLine}{code})";
         }
     }
 }
