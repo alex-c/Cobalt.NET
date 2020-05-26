@@ -436,7 +436,7 @@ namespace Cobalt.Compiler.Parser
             if (token.Type == TokenType.TypeKeyword)
             {
                 TypeNode type = null;
-                CobaltType cobaltType = token.GetData<CobaltType>(TokenDataKeys.IDENTIFIER_NAME);
+                CobaltType cobaltType = token.GetData<CobaltType>(TokenDataKeys.COBALT_TYPE);
                 switch (cobaltType)
                 {
                     case CobaltType.Boolean:
