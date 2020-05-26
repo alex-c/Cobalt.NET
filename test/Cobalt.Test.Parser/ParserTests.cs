@@ -32,6 +32,8 @@ namespace Cobalt.Test.Parser
             Parser = new CobaltParser(new LoggerFactory());
         }
 
+        #region Leaf node parsing
+
         [Theory]
         [InlineData("test")]
         [InlineData("test123")]
@@ -135,6 +137,99 @@ namespace Cobalt.Test.Parser
                     throw new XunitException("No test implemented for this type.");
             }
         }
+
+        #endregion
+
+        #region Expression parsing
+
+        [Theory]
+        [InlineData(true, CobaltType.Boolean)]
+        [InlineData(false, CobaltType.Boolean)]
+        [InlineData(3.14f, CobaltType.Float)]
+        [InlineData(0f, CobaltType.Float)]
+        [InlineData(-3.14f, CobaltType.Float)]
+        [InlineData(-3, CobaltType.Integer)]
+        [InlineData(0, CobaltType.Integer)]
+        [InlineData(12, CobaltType.Integer)]
+        public void ShouldParseSingleValueExpressions(object value, CobaltType type)
+        {
+            // Arrange
+            List<Token> tokens = new List<Token>()
+            {
+                new Token(TokenType.LiteralValue, 1, 0)
+            };
+            tokens.First().SetData(TokenDataKeys.LITERAL_VALUE, value);
+            tokens.First().SetData(TokenDataKeys.COBALT_TYPE, type);
+
+            // Act
+            ExpressionNode expression = Parser.ParseExpression(tokens);
+
+            // Assert
+            if (expression is SingleLeafExpressionNode singleLeafExpression)
+            {
+                if (singleLeafExpression.Leaf is BooleanValueNode booleanValue)
+                {
+                    Assert.Equal(CobaltType.Boolean, type);
+                    Assert.Equal((bool)value, booleanValue.Value);
+                }
+                else if (singleLeafExpression.Leaf is FloatValueNode floatValue)
+                {
+                    Assert.Equal(CobaltType.Float, type);
+                    Assert.Equal((float)value, floatValue.Value);
+                }
+                else if (singleLeafExpression.Leaf is IntegerValueNode integerValue)
+                {
+                    Assert.Equal(CobaltType.Integer, type);
+                    Assert.Equal((int)value, integerValue.Value);
+                }
+                else
+                {
+                    throw new XunitException("Wrong expression type.");
+                }
+            }
+            else
+            {
+                throw new XunitException("Wrong expression type.");
+            }
+        }
+
+        [Theory]
+        [InlineData("test")]
+        [InlineData("test123")]
+        [InlineData("_test")]
+        public void ShouldParseSingleIdentifierExpressions(string identifierName)
+        {
+            // Arrange
+            List<Token> tokens = new List<Token>()
+            {
+                new Token(TokenType.Identifier, 1, 0)
+            };
+            tokens.First().SetData(TokenDataKeys.IDENTIFIER_NAME, identifierName);
+
+            // Act
+            ExpressionNode expression = Parser.ParseExpression(tokens);
+
+            // Assert
+            if (expression is SingleLeafExpressionNode singleLeafExpression)
+            {
+                if (singleLeafExpression.Leaf is IdentifierNode identifierNode)
+                {
+                    Assert.Equal(identifierName, identifierNode.IdentifierName);
+                }
+                else
+                {
+                    throw new XunitException("Wrong expression type.");
+                }
+            }
+            else
+            {
+                throw new XunitException("Wrong expression type.");
+            }
+        }
+
+        #endregion
+
+        #region Statement parsing
 
         [Theory]
         [InlineData("test")]
@@ -249,5 +344,7 @@ namespace Cobalt.Test.Parser
                 throw new XunitException("Wrong node type.");
             }
         }
+
+        #endregion
     }
 }
