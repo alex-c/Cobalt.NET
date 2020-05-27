@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Files\compare_numbers.co">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Files\mean.co">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

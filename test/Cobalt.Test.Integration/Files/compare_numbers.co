@@ -1,0 +1,7 @@
+def a := ~3;
+def b := 5;
+def lessOrEqual:bool;
+
+lessOrEqual := a <= b;
+
+stdout lessOrEqual;

@@ -394,12 +394,22 @@ namespace Cobalt.Compiler.Parser
                     expression = new DivisionNode(operatorToken.SourceLine);
                     break;
                 case TokenType.Equals:
+                    expression = new EqualsComparisonNode(operatorToken.SourceLine);
+                    break;
                 case TokenType.NotEquals:
+                    expression = new NotEqualsComparisonNode(operatorToken.SourceLine);
+                    break;
                 case TokenType.Less:
+                    expression = new LessComparisonNode(operatorToken.SourceLine);
+                    break;
                 case TokenType.EqualsOrLess:
+                    expression = new EqualsOrLessComparisonNode(operatorToken.SourceLine);
+                    break;
                 case TokenType.Greater:
+                    expression = new GreaterComparisonNode(operatorToken.SourceLine);
+                    break;
                 case TokenType.EqualsOrGreater:
-                    expression = new ComparisonNode(operatorToken.SourceLine);
+                    expression = new EqualsOrGreaterComparisonNode(operatorToken.SourceLine);
                     break;
                 case TokenType.And:
                     expression = new LogicalAndNode(operatorToken.SourceLine);

@@ -99,6 +99,25 @@ namespace Cobalt.Test.Integration
             }
         }
 
+        [Fact]
+        public void CompareTwoIntegers()
+        {
+            // Arrange
+            string source = ReadFromFile("compare_numbers.co");
+
+            // Act
+            List<Token> tokens = Lexer.Tokenize(source);
+            CobaltProgram ast = Parser.Parse(tokens);
+
+            // Assert
+            Assert.Equal(5, ast.Code.Statements.Count);
+            Assert.True(ast.Code.Statements.ElementAt(0) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(1) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(2) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(3) is VariableAssignmentStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(5) is StandardOutputStatementNode);
+        }
+
         private string ReadFromFile(string fileName)
         {
             return File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "Files", fileName));
