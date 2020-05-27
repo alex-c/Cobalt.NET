@@ -1,8 +1,8 @@
 using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Expressions;
 using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
-using Cobalt.AbstractSyntaxTree.Expressions.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Leafs;
+using Cobalt.AbstractSyntaxTree.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Leafs.TypeNodes;
 using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Parser;

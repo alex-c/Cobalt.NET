@@ -5,5 +5,10 @@
         public AstNode Operand { get; set; }
 
         public UnaryExpressionNode(int sourceLine) : base(sourceLine) { }
+
+        public override string ToString()
+        {
+            return $"{GetType().Name}({Operand})";
+        }
     }
 }

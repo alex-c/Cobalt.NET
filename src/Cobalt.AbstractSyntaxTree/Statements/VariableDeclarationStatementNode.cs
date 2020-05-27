@@ -1,12 +1,9 @@
 ﻿using Cobalt.AbstractSyntaxTree.Expressions;
 using Cobalt.AbstractSyntaxTree.Leafs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cobalt.AbstractSyntaxTree.Statements
 {
-    public class VariableDeclarationStatement : StatementNode
+    public class VariableDeclarationStatementNode : StatementNode
     {
         public IdentifierNode Identifier { get; set; }
 
@@ -14,11 +11,13 @@ namespace Cobalt.AbstractSyntaxTree.Statements
 
         public ExpressionNode Expression { get; set; }
 
-        public VariableDeclarationStatement(int sourceLine) : base(sourceLine) { }
+        public VariableDeclarationStatementNode(int sourceLine) : base(sourceLine) { }
 
         public override string ToString()
         {
-            return $"{GetType().Name}({Identifier} : {Type} = {Expression})";
+            string type = Type == null ? " :" : $":{Type} ";
+            string expr = Expression == null ? "" : $"= {Expression}";
+            return $"{GetType().Name}({Identifier}{type}{expr})";
         }
     }
 }

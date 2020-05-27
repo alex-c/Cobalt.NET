@@ -1,9 +1,9 @@
 ﻿using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Expressions;
 using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
-using Cobalt.AbstractSyntaxTree.Expressions.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Expressions.UnaryExpressions;
 using Cobalt.AbstractSyntaxTree.Leafs;
+using Cobalt.AbstractSyntaxTree.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Leafs.TypeNodes;
 using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Tokens;
@@ -184,7 +184,7 @@ namespace Cobalt.Compiler.Parser
             }
 
             // Create and return output statement node
-            return new VariableDeclarationStatement(tokens.First().SourceLine)
+            return new VariableDeclarationStatementNode(tokens.First().SourceLine)
             {
                 Identifier = identifier,
                 Type = type,
@@ -209,7 +209,7 @@ namespace Cobalt.Compiler.Parser
             ExpressionNode expression = ParseExpression(tokens.GetRange(3, tokens.Count - 3));
 
             // Create and return output statement node
-            return new VariableAssignmentStatement(tokens.First().SourceLine)
+            return new VariableAssignmentStatementNode(tokens.First().SourceLine)
             {
                 Identifier = identifier,
                 Expression = expression

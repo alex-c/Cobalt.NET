@@ -10,7 +10,7 @@ namespace Cobalt.AbstractSyntaxTree.Statements
 
         public override string ToString()
         {
-            return $"{GetType().Name}(`{Expression}`)";
+            return $"{GetType().Name}({Expression})";
         }
     }
 }

@@ -7,5 +7,10 @@
         public AstNode RightOperand { get; set; }
 
         public BinaryExpressionNode(int sourceLine) : base(sourceLine) { }
+
+        public override string ToString()
+        {
+            return $"{GetType().Name}({LeftOperand},{RightOperand})";
+        }
     }
 }

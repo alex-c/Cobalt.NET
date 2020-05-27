@@ -1,15 +1,14 @@
 using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Expressions;
 using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
-using Cobalt.AbstractSyntaxTree.Expressions.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Leafs;
+using Cobalt.AbstractSyntaxTree.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Statements;
 using Cobalt.Compiler.Lexer;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,14 +42,14 @@ namespace Cobalt.Test.Integration
 
             // Assert
             Assert.Equal(6, ast.Code.Statements.Count);
-            Assert.True(ast.Code.Statements.ElementAt(0) is VariableDeclarationStatement);
-            Assert.True(ast.Code.Statements.ElementAt(1) is VariableDeclarationStatement);
-            Assert.True(ast.Code.Statements.ElementAt(2) is VariableDeclarationStatement);
-            Assert.True(ast.Code.Statements.ElementAt(3) is VariableAssignmentStatement);
+            Assert.True(ast.Code.Statements.ElementAt(0) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(1) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(2) is VariableDeclarationStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(3) is VariableAssignmentStatementNode);
             Assert.True(ast.Code.Statements.ElementAt(5) is StandardOutputStatementNode);
 
             StatementNode meanStatement = ast.Code.Statements.ElementAt(ast.Code.Statements.Count - 2);
-            if (meanStatement is VariableDeclarationStatement variableDeclaration)
+            if (meanStatement is VariableDeclarationStatementNode variableDeclaration)
             {
                 Assert.Equal("mean", variableDeclaration.Identifier.IdentifierName);
                 ExpressionNode expression = variableDeclaration.Expression;
@@ -96,13 +95,8 @@ namespace Cobalt.Test.Integration
             }
             else
             {
-                throw XunitException("Wrong statement type.");
+                throw new XunitException("Wrong statement type.");
             }
-        }
-
-        private Exception XunitException(string v)
-        {
-            throw new NotImplementedException();
         }
 
         private string ReadFromFile(string fileName)
