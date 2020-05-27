@@ -115,7 +115,7 @@ namespace Cobalt.Test.Integration
             Assert.True(ast.Code.Statements.ElementAt(1) is VariableDeclarationStatementNode);
             Assert.True(ast.Code.Statements.ElementAt(2) is VariableDeclarationStatementNode);
             Assert.True(ast.Code.Statements.ElementAt(3) is VariableAssignmentStatementNode);
-            Assert.True(ast.Code.Statements.ElementAt(5) is StandardOutputStatementNode);
+            Assert.True(ast.Code.Statements.ElementAt(4) is StandardOutputStatementNode);
         }
 
         private string ReadFromFile(string fileName)
