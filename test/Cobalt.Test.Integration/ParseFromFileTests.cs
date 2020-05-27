@@ -42,7 +42,12 @@ namespace Cobalt.Test.Integration
             CobaltProgram ast = Parser.Parse(tokens);
 
             // Assert
-            Assert.Equal(5, ast.Code.Statements.Count);
+            Assert.Equal(6, ast.Code.Statements.Count);
+            Assert.True(ast.Code.Statements.ElementAt(0) is VariableDeclarationStatement);
+            Assert.True(ast.Code.Statements.ElementAt(1) is VariableDeclarationStatement);
+            Assert.True(ast.Code.Statements.ElementAt(2) is VariableDeclarationStatement);
+            Assert.True(ast.Code.Statements.ElementAt(3) is VariableAssignmentStatement);
+            Assert.True(ast.Code.Statements.ElementAt(5) is StandardOutputStatementNode);
 
             StatementNode meanStatement = ast.Code.Statements.ElementAt(ast.Code.Statements.Count - 2);
             if (meanStatement is VariableDeclarationStatement variableDeclaration)

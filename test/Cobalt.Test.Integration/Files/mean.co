@@ -1,6 +1,7 @@
 def a:int = 9;
 def b := 10;
-def c := 11;
+def c:int;
+c := 11;
 
 def mean := (a + b + c) / 3;
 

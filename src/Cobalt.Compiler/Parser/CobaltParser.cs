@@ -147,11 +147,11 @@ namespace Cobalt.Compiler.Parser
 
         public StatementNode ParseVariableDeclarationStatement(List<Token> tokens)
         {
-            if (tokens.Count <= 4 ||
+            if (tokens.Count <= 3 ||
                 tokens.ElementAt(0).Type != TokenType.Declaration ||
                 tokens.ElementAt(1).Type != TokenType.Identifier ||
                 tokens.ElementAt(2).Type != TokenType.Colon ||
-                (tokens.ElementAt(3).Type != TokenType.Equal && tokens.ElementAt(4).Type != TokenType.Equal))
+                (tokens.ElementAt(3).Type != TokenType.Equal && tokens.ElementAt(3).Type != TokenType.TypeKeyword))
             {
                 throw new CobaltSyntaxError($"Ivalid variable declaration statement.", tokens.First().SourceLine, tokens.First().PositionOnLine);
             }
@@ -194,20 +194,19 @@ namespace Cobalt.Compiler.Parser
 
         public StatementNode ParseVariableAssignmentStatement(List<Token> tokens)
         {
-            if (tokens.Count <= 4 ||
-                tokens.ElementAt(0).Type != TokenType.Declaration ||
-                tokens.ElementAt(1).Type != TokenType.Identifier ||
-                tokens.ElementAt(2).Type != TokenType.Colon ||
-                tokens.ElementAt(3).Type != TokenType.Equal)
+            if (tokens.Count <= 3 ||
+                tokens.ElementAt(0).Type != TokenType.Identifier ||
+                tokens.ElementAt(1).Type != TokenType.Colon ||
+                tokens.ElementAt(2).Type != TokenType.Equal)
             {
                 throw new CobaltSyntaxError($"Ivalid variable assignment statement.", tokens.First().SourceLine, tokens.First().PositionOnLine);
             }
 
             // Parse identifier
-            IdentifierNode identifier = ParseIdentifier(tokens.ElementAt(1));
+            IdentifierNode identifier = ParseIdentifier(tokens.ElementAt(0));
 
             // Parse expression
-            ExpressionNode expression = ParseExpression(tokens.GetRange(4, tokens.Count - 4));
+            ExpressionNode expression = ParseExpression(tokens.GetRange(3, tokens.Count - 3));
 
             // Create and return output statement node
             return new VariableAssignmentStatement(tokens.First().SourceLine)
