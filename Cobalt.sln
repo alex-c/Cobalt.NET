@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Test.Lexer", "test\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Compiler", "src\Cobalt.Compiler\Cobalt.Compiler.csproj", "{23E5E3AD-6205-4187-977A-158CC27B1685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cobalt.Test.Parser", "test\Cobalt.Test.Parser\Cobalt.Test.Parser.csproj", "{FD8A9AEA-CEC1-4336-99D7-7E1E7BC5593F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobalt.Test.Parser", "test\Cobalt.Test.Parser\Cobalt.Test.Parser.csproj", "{FD8A9AEA-CEC1-4336-99D7-7E1E7BC5593F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cobalt.Test.Integration", "test\Cobalt.Test.Integration\Cobalt.Test.Integration.csproj", "{EFED73C2-FCD7-4A74-AB4F-9CC81FDAF331}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FD8A9AEA-CEC1-4336-99D7-7E1E7BC5593F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD8A9AEA-CEC1-4336-99D7-7E1E7BC5593F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD8A9AEA-CEC1-4336-99D7-7E1E7BC5593F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFED73C2-FCD7-4A74-AB4F-9CC81FDAF331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFED73C2-FCD7-4A74-AB4F-9CC81FDAF331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFED73C2-FCD7-4A74-AB4F-9CC81FDAF331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFED73C2-FCD7-4A74-AB4F-9CC81FDAF331}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

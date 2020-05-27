@@ -258,7 +258,9 @@ namespace Cobalt.Compiler.Parser
                     case TokenType.Asterisk:
                     case TokenType.Slash:
                     case TokenType.Tilde:
-                        while (operatorStack.Any() && token.GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE) <= operatorStack.Last().GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE))
+                        while (operatorStack.Any() &&
+                            operatorStack.Peek().Type != TokenType.LeftParenthesis &&
+                            token.GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE) < operatorStack.Peek().GetData<int>(TokenDataKeys.OPERATOR_PRECEDENCE))
                         {
                             Token operatorToken = operatorStack.Pop();
                             int operatorArity = operatorToken.GetData<int>(TokenDataKeys.OPERATOR_ARITY);
@@ -280,7 +282,7 @@ namespace Cobalt.Compiler.Parser
                         operatorStack.Push(token);
                         break;
                     case TokenType.RightParenthesis:
-                        while (operatorStack.Any() && operatorStack.Last().Type != TokenType.LeftParenthesis)
+                        while (operatorStack.Any() && operatorStack.Peek().Type != TokenType.LeftParenthesis)
                         {
                             Token operatorToken = operatorStack.Pop();
                             int operatorArity = operatorToken.GetData<int>(TokenDataKeys.OPERATOR_ARITY);
@@ -299,7 +301,7 @@ namespace Cobalt.Compiler.Parser
                                     throw new CompilerException($"Operator has illegal arity {operatorArity}.");
                             }
                         }
-                        if (operatorStack.Last().Type != TokenType.LeftParenthesis)
+                        if (operatorStack.Peek().Type != TokenType.LeftParenthesis)
                         {
                             throw new CobaltSyntaxError("Parantheses missmatched in expression.", token.SourceLine, token.PositionOnLine);
                         }
