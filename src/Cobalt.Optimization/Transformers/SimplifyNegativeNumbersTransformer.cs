@@ -1,5 +1,5 @@
-﻿using Cobalt.AbstractSyntaxTree;
-using Cobalt.AbstractSyntaxTree.Expressions.UnaryExpressions;
+﻿using Cobalt.AbstractSyntaxTree.Nodes;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.UnaryExpressions;
 
 namespace Cobalt.Optimization.Transformers
 {

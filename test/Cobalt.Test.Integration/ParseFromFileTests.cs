@@ -1,9 +1,9 @@
-using Cobalt.AbstractSyntaxTree;
-using Cobalt.AbstractSyntaxTree.Expressions;
-using Cobalt.AbstractSyntaxTree.Expressions.BinaryExpressions;
-using Cobalt.AbstractSyntaxTree.Leafs;
-using Cobalt.AbstractSyntaxTree.Leafs.LiteralValues;
-using Cobalt.AbstractSyntaxTree.Statements;
+using Cobalt.AbstractSyntaxTree.Nodes;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
+using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.Compiler.Lexer;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;

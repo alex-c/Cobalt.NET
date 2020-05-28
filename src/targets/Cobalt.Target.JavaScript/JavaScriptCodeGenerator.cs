@@ -1,4 +1,4 @@
-﻿using Cobalt.AbstractSyntaxTree;
+﻿using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.Compiler;
 using System;
 

@@ -1,4 +1,4 @@
-﻿using Cobalt.AbstractSyntaxTree;
+﻿using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.Compiler.Lexer;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;
