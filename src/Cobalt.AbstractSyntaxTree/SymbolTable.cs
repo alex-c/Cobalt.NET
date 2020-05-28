@@ -31,7 +31,5 @@ namespace Cobalt.AbstractSyntaxTree
             }
             return false;
         }
-
-        // TODO: method to update symbol
     }
 }

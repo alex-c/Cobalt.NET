@@ -26,13 +26,13 @@
         Declaration,
         StandardInput,
         StandardOutput,
-        TypeKeyword, // TODO: expand to explicit types?
+        TypeKeyword,
 
         // Identifier
         Identifier,
 
         // Literal values
-        LiteralValue, // TODO: expand to explicit types?
+        LiteralValue,
 
         // Operators
         Equals,

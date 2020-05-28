@@ -7,19 +7,19 @@ namespace Cobalt.AbstractSyntaxTree.Types
 {
     public class VariableTypeSignature : ITypeSignature
     {
-        private CobaltType Type { get; }
+        public CobaltType CobaltType { get; }
 
         public string Signature
         {
             get
             {
-                return Type.ToString();
+                return CobaltType.ToString();
             }
         }
 
         public VariableTypeSignature(CobaltType type)
         {
-            Type = type;
+            CobaltType = type;
         }
     }
 }

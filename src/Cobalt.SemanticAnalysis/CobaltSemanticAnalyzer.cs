@@ -50,7 +50,7 @@ namespace Cobalt.SemanticAnalysis
                 CobaltType expressionType = AnalyzeExpression(variableDeclaration.Expression);
                 if (expressionType != variableDeclaration.TypeKeyword.Type)
                 {
-                    throw new CobaltTypeError($"Type mismatch between explicitely declared type of variable `{variableDeclaration.Identifier.IdentifierName}` and type of expression.", variableDeclaration.Expression.SourceLine);
+                    throw new CobaltTypeError($"Type mismatch between explicitely declared type of variable `{variableDeclaration.Identifier.IdentifierName}` ({variableDeclaration.TypeKeyword.Type}) and type of expression ({expressionType}).", variableDeclaration.Expression.SourceLine);
                 }
                 variableType = expressionType;
             }
@@ -71,6 +71,40 @@ namespace Cobalt.SemanticAnalysis
                 variableDeclaration.Expression != null,
                 variableDeclaration.SourceLine);
             RegisterSymbol(variableDeclaration.Parent, variable);
+        }
+
+        private void AnalyzeVariableAssignment(VariableAssignmentStatementNode variableAssignment)
+        {
+            Symbol variable = LookupSymbol(variableAssignment.Parent, variableAssignment.Identifier.IdentifierName);
+            CobaltType expressionType = AnalyzeExpression(variableAssignment.Expression);
+            if (variable.Type is VariableTypeSignature variableType)
+            {
+                if (variableType.CobaltType == expressionType)
+                {
+                    if (!variable.ValueAssigned)
+                    {
+                        variable.ValueAssigned = true;
+                    }
+                }
+                else
+                {
+                    throw new CobaltTypeError($"Type mismatch between variable type of variable `{variableAssignment.Identifier.IdentifierName}` ({variableType.CobaltType}) and type of expression ({expressionType}).", variableAssignment.Expression.SourceLine);
+                }
+            }
+            else
+            {
+                throw new CompilerException($"The type signature of variable `{variable.Identifier}` is not a variable type signature.");
+            }
+        }
+
+        private void AnalzyeStandardInputStatement(StandardInputStatementNode standardInput)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AnalyzeStandardOutputStatement(StandardOutputStatementNode standardOutput)
+        {
+            throw new NotImplementedException();
         }
 
         private CobaltType AnalyzeExpression(ExpressionNode expression)
@@ -97,6 +131,10 @@ namespace Cobalt.SemanticAnalysis
                 if (scopeDefiningAstNode.SymbolTable.TryGetSymbol(identifier, out Symbol symbol))
                 {
                     return symbol;
+                }
+                else
+                {
+                    // TODO: exception!
                 }
             }
             return LookupSymbol(node.Parent, identifier);

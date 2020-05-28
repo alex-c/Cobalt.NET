@@ -86,7 +86,7 @@ namespace Cobalt
                     // Set up compiler
                     CobaltCompiler compiler = new CobaltCompiler(loggerFactory, backend);
 
-                    // TODO: rad code from input file
+                    // TODO: read code from input file
                     string sourceCode = "TODO!";
 
                     // Compile!
