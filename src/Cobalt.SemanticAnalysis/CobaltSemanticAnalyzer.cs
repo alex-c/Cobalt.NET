@@ -1,9 +1,12 @@
 ﻿using Cobalt.AbstractSyntaxTree;
 using Cobalt.AbstractSyntaxTree.Nodes;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
+using Cobalt.AbstractSyntaxTree.Types;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Cobalt.SemanticAnalysis
 {
@@ -38,6 +41,11 @@ namespace Cobalt.SemanticAnalysis
         }
 
         private void AnalyzeVariableDeclaration(VariableDeclarationStatementNode variableDeclaration)
+        {
+            ITypeSignature expressionType = AnalyzeExpression(variableDeclaration.Expression);
+        }
+
+        private ITypeSignature AnalyzeExpression(ExpressionNode expression)
         {
             throw new NotImplementedException();
         }

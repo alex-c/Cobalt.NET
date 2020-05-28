@@ -1,4 +1,4 @@
-﻿using Cobalt.Exceptions;
+﻿using Cobalt.Shared.Exceptions;
 using System.Collections.Generic;
 
 namespace Cobalt.Compiler.Tokens

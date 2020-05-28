@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cobalt.Exceptions
+namespace Cobalt.Compiler.Exceptions
 {
     /// <summary>
     /// Describes a Cobalt syntac error.

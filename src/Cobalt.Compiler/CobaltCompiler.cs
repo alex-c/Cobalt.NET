@@ -1,10 +1,11 @@
 ﻿using Cobalt.AbstractSyntaxTree.Nodes;
+using Cobalt.Compiler.Exceptions;
 using Cobalt.Compiler.Lexer;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;
-using Cobalt.Exceptions;
 using Cobalt.Optimization;
 using Cobalt.SemanticAnalysis;
+using Cobalt.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

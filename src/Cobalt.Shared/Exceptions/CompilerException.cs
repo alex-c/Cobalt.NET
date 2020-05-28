@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cobalt.Exceptions
+namespace Cobalt.Shared.Exceptions
 {
     /// <summary>
     /// Describes a Cobalt compiler exception. This should be used for cases where an error does not stem from the Cobalt code being compiled,

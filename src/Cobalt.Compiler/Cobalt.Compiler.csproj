@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Cobalt.AbstractSyntaxTree\Cobalt.AbstractSyntaxTree.csproj" />
     <ProjectReference Include="..\Cobalt.Optimization\Cobalt.Optimization.csproj" />
     <ProjectReference Include="..\Cobalt.SemanticAnalysis\Cobalt.SemanticAnalysis.csproj" />
+    <ProjectReference Include="..\Cobalt.Shared\Cobalt.Shared.csproj" />
   </ItemGroup>
 
 </Project>

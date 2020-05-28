@@ -1,5 +1,7 @@
-﻿using Cobalt.Compiler.Tokens;
-using Cobalt.Exceptions;
+﻿using Cobalt.Compiler.Exceptions;
+using Cobalt.Compiler.Tokens;
+using Cobalt.Shared;
+using Cobalt.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

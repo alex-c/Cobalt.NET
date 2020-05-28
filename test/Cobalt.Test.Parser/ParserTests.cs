@@ -7,6 +7,7 @@ using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeNodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;
+using Cobalt.Shared;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
