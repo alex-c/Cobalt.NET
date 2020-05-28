@@ -3,10 +3,12 @@ using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.AbstractSyntaxTree.Types;
+using Cobalt.SemanticAnalysis.Exceptions;
+using Cobalt.Shared;
+using Cobalt.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Cobalt.SemanticAnalysis
 {
@@ -42,10 +44,36 @@ namespace Cobalt.SemanticAnalysis
 
         private void AnalyzeVariableDeclaration(VariableDeclarationStatementNode variableDeclaration)
         {
-            ITypeSignature expressionType = AnalyzeExpression(variableDeclaration.Expression);
+            CobaltType variableType;
+            if (variableDeclaration.TypeKeyword != null && variableDeclaration.Expression != null)
+            {
+                CobaltType expressionType = AnalyzeExpression(variableDeclaration.Expression);
+                if (expressionType != variableDeclaration.TypeKeyword.Type)
+                {
+                    throw new CobaltTypeError($"Type mismatch between explicitely declared type of variable `{variableDeclaration.Identifier.IdentifierName}` and type of expression.", variableDeclaration.Expression.SourceLine);
+                }
+                variableType = expressionType;
+            }
+            else if (variableDeclaration.TypeKeyword == null && variableDeclaration.Expression != null)
+            {
+                variableType = AnalyzeExpression(variableDeclaration.Expression);
+            }
+            else if (variableDeclaration.TypeKeyword != null && variableDeclaration.Expression == null)
+            {
+                variableType = variableDeclaration.TypeKeyword.Type;
+            }
+            else
+            {
+                throw new CompilerException("");
+            }
+            Symbol variable = new Symbol(variableDeclaration.Identifier.IdentifierName,
+                new VariableTypeSignature(variableType),
+                variableDeclaration.Expression != null,
+                variableDeclaration.SourceLine);
+            RegisterSymbol(variableDeclaration.Parent, variable);
         }
 
-        private ITypeSignature AnalyzeExpression(ExpressionNode expression)
+        private CobaltType AnalyzeExpression(ExpressionNode expression)
         {
             throw new NotImplementedException();
         }

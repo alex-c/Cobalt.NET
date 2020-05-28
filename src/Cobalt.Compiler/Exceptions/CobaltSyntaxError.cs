@@ -3,7 +3,7 @@
 namespace Cobalt.Compiler.Exceptions
 {
     /// <summary>
-    /// Describes a Cobalt syntac error.
+    /// Describes a Cobalt syntax error.
     /// </summary>
     public class CobaltSyntaxError : Exception
     {
