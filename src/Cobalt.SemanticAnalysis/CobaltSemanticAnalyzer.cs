@@ -1,4 +1,5 @@
 ﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.AbstractSyntaxTree.Exceptions;
 using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
@@ -36,11 +37,22 @@ namespace Cobalt.SemanticAnalysis
                     case VariableDeclarationStatementNode variableDeclaration:
                         AnalyzeVariableDeclaration(variableDeclaration);
                         break;
+                    case VariableAssignmentStatementNode variableAssignment:
+                        AnalyzeVariableAssignment(variableAssignment);
+                        break;
+                    case StandardInputStatementNode standardInputStatement:
+                        AnalzyeStandardInputStatement(standardInputStatement);
+                        break;
+                    case StandardOutputStatementNode standardOutputStatement:
+                        AnalyzeStandardOutputStatement(standardOutputStatement);
+                        break;
                     default:
                         throw new NotImplementedException($"No semantic analysis implemented for AST node of type `{statement.GetType()}`.");
                 }
             }
         }
+
+        #region Statements
 
         private void AnalyzeVariableDeclaration(VariableDeclarationStatementNode variableDeclaration)
         {
@@ -81,10 +93,7 @@ namespace Cobalt.SemanticAnalysis
             {
                 if (variableType.CobaltType == expressionType)
                 {
-                    if (!variable.ValueAssigned)
-                    {
-                        variable.ValueAssigned = true;
-                    }
+                    variable.ValueAssigned = true;
                 }
                 else
                 {
@@ -99,18 +108,30 @@ namespace Cobalt.SemanticAnalysis
 
         private void AnalzyeStandardInputStatement(StandardInputStatementNode standardInput)
         {
-            throw new NotImplementedException();
+            Symbol identifier = LookupSymbol(standardInput.Parent, standardInput.Identifier.IdentifierName);
+            if (identifier.Type is VariableTypeSignature)
+            {
+                identifier.ValueAssigned = true;
+            }
+            else
+            {
+                throw new CobaltTypeError($"Standard input called with an identifier that is not a variable (`{identifier.Identifier}`).", standardInput.Identifier.SourceLine);
+            }
         }
 
         private void AnalyzeStandardOutputStatement(StandardOutputStatementNode standardOutput)
         {
-            throw new NotImplementedException();
+            AnalyzeExpression(standardOutput.Expression);
         }
+
+        #endregion
 
         private CobaltType AnalyzeExpression(ExpressionNode expression)
         {
             throw new NotImplementedException();
         }
+
+        #region Symbol table helpers
 
         private void RegisterSymbol(AstNode node, Symbol symbol)
         {
@@ -118,9 +139,13 @@ namespace Cobalt.SemanticAnalysis
             {
                 scopeDefiningAstNode.SymbolTable.RegisterSymbol(symbol);
             }
-            else
+            else if (node.Parent != null)
             {
                 RegisterSymbol(node.Parent, symbol);
+            }
+            else
+            {
+                throw new CompilerException($"Could not find a scope-defining AST node. Last parentless visited node is of type {node.GetType()}.");
             }
         }
 
@@ -132,12 +157,17 @@ namespace Cobalt.SemanticAnalysis
                 {
                     return symbol;
                 }
-                else
-                {
-                    // TODO: exception!
-                }
             }
-            return LookupSymbol(node.Parent, identifier);
+            if (node.Parent != null)
+            {
+                return LookupSymbol(node.Parent, identifier);
+            }
+            else
+            {
+                throw new UndeclaredIdentifierError(identifier);
+            }
         }
+
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Cobalt.AbstractSyntaxTree.Exceptions;
 using System.Collections.Generic;
 
 namespace Cobalt.AbstractSyntaxTree
@@ -16,8 +16,7 @@ namespace Cobalt.AbstractSyntaxTree
         {
             if (Symbols.ContainsKey(symbol.Identifier))
             {
-                // TODO: define exception
-                throw new NotImplementedException();
+                throw new DuplicateDeclarationError(symbol);
             }
         }
 
