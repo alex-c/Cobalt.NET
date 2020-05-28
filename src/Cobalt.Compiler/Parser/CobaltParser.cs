@@ -50,10 +50,8 @@ namespace Cobalt.Compiler.Parser
             }
 
             // Parse program as a code block
-            CobaltProgram program = new CobaltProgram
-            {
-                Code = ParseCodeBlock(tokens, 0, tokens.Count())
-            };
+            CobaltProgram program = new CobaltProgram();
+            program.Code = ParseCodeBlock(tokens, 0, tokens.Count());
 
             // No error encountered, terminate parsing
             return program;
@@ -99,7 +97,7 @@ namespace Cobalt.Compiler.Parser
                     default:
                         throw new CobaltSyntaxError($"Expected a statement, but got a {token.Type} token instead.", token.SourceLine, token.PositionOnLine);
                 }
-                codeBlock.Statements.Add(statementNode);
+                codeBlock.AddStatement(statementNode);
                 position = statementLimit + 1;
             }
 
@@ -122,10 +120,9 @@ namespace Cobalt.Compiler.Parser
             IdentifierNode identifier = ParseIdentifier(tokens.Last());
 
             // Create and return input statement node
-            return new StandardInputStatementNode(tokens.First().SourceLine)
-            {
-                Identifier = identifier
-            };
+            StandardInputStatementNode statement = new StandardInputStatementNode(tokens.First().SourceLine);
+            statement.Identifier = identifier;
+            return statement;
         }
 
         public StatementNode ParseStandardOutputStatement(List<Token> tokens)
@@ -139,10 +136,9 @@ namespace Cobalt.Compiler.Parser
             ExpressionNode expression = ParseExpression(tokens.GetRange(1, tokens.Count - 1));
 
             // Create and return output statement node
-            return new StandardOutputStatementNode(tokens.First().SourceLine)
-            {
-                Expression = expression
-            };
+            StandardOutputStatementNode statement = new StandardOutputStatementNode(tokens.First().SourceLine);
+            statement.Expression = expression;
+            return statement;
         }
 
         public StatementNode ParseVariableDeclarationStatement(List<Token> tokens)
@@ -184,12 +180,17 @@ namespace Cobalt.Compiler.Parser
             }
 
             // Create and return output statement node
-            return new VariableDeclarationStatementNode(tokens.First().SourceLine)
+            VariableDeclarationStatementNode statement = new VariableDeclarationStatementNode(tokens.First().SourceLine);
+            statement.Identifier = identifier;
+            if (type != null)
             {
-                Identifier = identifier,
-                Type = type,
-                Expression = expression
-            };
+                statement.Type = type;
+            }
+            if (expression != null)
+            {
+                statement.Expression = expression;
+            }
+            return statement;
         }
 
         public StatementNode ParseVariableAssignmentStatement(List<Token> tokens)
@@ -209,11 +210,10 @@ namespace Cobalt.Compiler.Parser
             ExpressionNode expression = ParseExpression(tokens.GetRange(3, tokens.Count - 3));
 
             // Create and return output statement node
-            return new VariableAssignmentStatementNode(tokens.First().SourceLine)
-            {
-                Identifier = identifier,
-                Expression = expression
-            };
+            VariableAssignmentStatementNode statement = new VariableAssignmentStatementNode(tokens.First().SourceLine);
+            statement.Identifier = identifier;
+            statement.Expression = expression;
+            return statement;
         }
 
         #endregion

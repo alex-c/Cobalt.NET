@@ -1,8 +1,23 @@
 ﻿namespace Cobalt.AbstractSyntaxTree
 {
-    public class CobaltProgram
+    public class CobaltProgram : AstNode
     {
-        public CodeBlockNode Code { get; set; }
+        private CodeBlockNode _code;
+
+        public CodeBlockNode Code
+        {
+            get
+            {
+                return _code;
+            }
+            set
+            {
+                value.Parent = this;
+                _code = value;
+            }
+        }
+
+        public CobaltProgram() : base(0) { }
 
         public override string ToString()
         {

@@ -2,9 +2,34 @@
 {
     public class BinaryExpressionNode : ExpressionNode
     {
-        public AstNode LeftOperand { get; set; }
+        private AstNode _leftOperand;
+        private AstNode _rightOperand;
 
-        public AstNode RightOperand { get; set; }
+        public AstNode LeftOperand
+        {
+            get
+            {
+                return _leftOperand;
+            }
+            set
+            {
+                value.Parent = this;
+                _leftOperand = value;
+            }
+        }
+
+        public AstNode RightOperand
+        {
+            get
+            {
+                return _rightOperand;
+            }
+            set
+            {
+                value.Parent = this;
+                _rightOperand = value;
+            }
+        }
 
         public BinaryExpressionNode(int sourceLine) : base(sourceLine) { }
 

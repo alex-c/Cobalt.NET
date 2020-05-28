@@ -13,6 +13,12 @@ namespace Cobalt.AbstractSyntaxTree
             Statements = new List<StatementNode>();
         }
 
+        public void AddStatement(StatementNode statement)
+        {
+            statement.Parent = this;
+            Statements.Add(statement);
+        }
+
         public override string ToString()
         {
             string code = "";

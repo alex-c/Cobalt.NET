@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Cobalt.AbstractSyntaxTree
 {
@@ -11,6 +12,26 @@ namespace Cobalt.AbstractSyntaxTree
             Symbols = new Dictionary<string, Symbol>();
         }
 
-        // TODO: methods for registering and looking up symbols
+        public void RegisterSymbol(Symbol symbol)
+        {
+            if (Symbols.ContainsKey(symbol.Identifier))
+            {
+                // TODO: define exception
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool TryGetSymbol(string identifier, out Symbol symbol)
+        {
+            symbol = null;
+            if (Symbols.ContainsKey(identifier))
+            {
+                symbol = Symbols[identifier];
+                return true;
+            }
+            return false;
+        }
+
+        // TODO: method to update symbol
     }
 }

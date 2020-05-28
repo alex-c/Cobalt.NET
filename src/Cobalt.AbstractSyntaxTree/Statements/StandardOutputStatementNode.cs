@@ -4,7 +4,19 @@ namespace Cobalt.AbstractSyntaxTree.Statements
 {
     public class StandardOutputStatementNode : StatementNode
     {
-        public ExpressionNode Expression { get; set; }
+        private ExpressionNode _expression;
+
+        public ExpressionNode Expression {
+            get
+            {
+                return _expression;
+            }
+            set
+            {
+                value.Parent = this;
+                _expression = value;
+            }
+        }
 
         public StandardOutputStatementNode(int sourceLine) : base(sourceLine) { }
 

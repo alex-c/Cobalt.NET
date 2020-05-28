@@ -1,7 +1,10 @@
 ﻿using Cobalt.AbstractSyntaxTree;
 using Cobalt.Compiler.Lexer;
 using Cobalt.Compiler.Parser;
+using Cobalt.Compiler.Tokens;
 using Cobalt.Exceptions;
+using Cobalt.Optimization;
+using Cobalt.SemanticAnalysis;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -28,6 +31,13 @@ namespace Cobalt.Compiler
         /// </summary>
         private CobaltParser Parser { get; }
 
+        /// <summary>
+        /// The optimizer used to optimize a Cobalt program's AST.
+        /// </summary>
+        private CobaltOptimizer Optimizer { get; }
+
+        private CobaltSemanticAnalyzer Analyzer { get; }
+
         private ICompilerBackend TargetCodeGenerator { get; }
 
         /// <summary>
@@ -39,6 +49,8 @@ namespace Cobalt.Compiler
             Logger = loggerFactory.CreateLogger<CobaltCompiler>();
             Lexer = new CobaltLexer(loggerFactory);
             Parser = new CobaltParser(loggerFactory);
+            Optimizer = new CobaltOptimizer(loggerFactory);
+            Analyzer = new CobaltSemanticAnalyzer(loggerFactory);
             TargetCodeGenerator = compilerBackend;
         }
 
@@ -47,17 +59,26 @@ namespace Cobalt.Compiler
         /// </summary>
         /// <param name="sourceCode">The input Cobalt code.</param>
         /// <returns>Returns the compiled target code.</returns>
-        public string Compile(string sourceCode)
+        public string Compile(string sourceCode, bool disableOptimization = false)
         {
             try
             {
-                List<Tokens.Token> tokens = Lexer.Tokenize(sourceCode);
+                // Lexical analysis
+                List<Token> tokens = Lexer.Tokenize(sourceCode);
+
+                // Parsing
                 CobaltProgram ast = Parser.Parse(tokens);
 
-                // TODO: type check
-                // TODO: optimize
+                // Semantic analysis
+                Analyzer.Analyze(ast);
 
-                // TODO: generate target code
+                // Optimization
+                if (!disableOptimization)
+                {
+                    ast = Optimizer.Optimize(ast);
+                }
+
+                // Target code generation
                 string targetCode = TargetCodeGenerator.GenerateTargetCode(ast);
                 return targetCode;
             }

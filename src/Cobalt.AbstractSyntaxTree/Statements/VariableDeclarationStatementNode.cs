@@ -5,11 +5,48 @@ namespace Cobalt.AbstractSyntaxTree.Statements
 {
     public class VariableDeclarationStatementNode : StatementNode
     {
-        public IdentifierNode Identifier { get; set; }
+        private IdentifierNode _identifier;
+        private TypeNode _type;
+        private ExpressionNode _expression;
 
-        public TypeNode Type { get; set; }
+        public IdentifierNode Identifier
+        {
+            get
+            {
+                return _identifier;
+            }
+            set
+            {
+                value.Parent = this;
+                _identifier = value;
+            }
+        }
 
-        public ExpressionNode Expression { get; set; }
+        public TypeNode Type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                value.Parent = this;
+                _type = value;
+            }
+        }
+
+        public ExpressionNode Expression
+        {
+            get
+            {
+                return _expression;
+            }
+            set
+            {
+                value.Parent = this;
+                _expression = value;
+            }
+        }
 
         public VariableDeclarationStatementNode(int sourceLine) : base(sourceLine) { }
 

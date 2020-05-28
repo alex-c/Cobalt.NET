@@ -2,7 +2,20 @@
 {
     public class SingleLeafExpressionNode : ExpressionNode
     {
-        public AstNode Leaf { get; set; }
+        private AstNode _leaf;
+
+        public AstNode Leaf
+        {
+            get
+            {
+                return _leaf;
+            }
+            set
+            {
+                value.Parent = this;
+                _leaf = value;
+            }
+        }
 
         public SingleLeafExpressionNode(int sourceLine) : base(sourceLine) { }
 

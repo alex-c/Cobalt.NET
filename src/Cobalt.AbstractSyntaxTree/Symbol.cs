@@ -1,9 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cobalt.AbstractSyntaxTree
+﻿namespace Cobalt.AbstractSyntaxTree
 {
-    // TODO: identifier, symbol type (eg. "identifier"), type signature?, value
-    public class Symbol { }
+    public class Symbol
+    {
+        public string Identifier { get; }
+
+        // TODO: design type signature...
+        public object Type { get; }
+
+        public bool ValueAssigned { get; set; }
+
+        public int DefinedOnLine { get; }
+    }
 }

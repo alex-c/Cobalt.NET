@@ -2,7 +2,20 @@
 {
     public class UnaryExpressionNode : ExpressionNode
     {
-        public AstNode Operand { get; set; }
+        private AstNode _operand;
+
+        public AstNode Operand
+        {
+            get
+            {
+                return _operand;
+            }
+            set
+            {
+                value.Parent = this;
+                _operand = value;
+            }
+        }
 
         public UnaryExpressionNode(int sourceLine) : base(sourceLine) { }
 
