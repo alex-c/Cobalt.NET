@@ -81,6 +81,7 @@ namespace Cobalt.Test.Parser
                 default:
                     throw new XunitException("No test implemented for this type.");
             }
+            Assert.Equal(type, node.Type);
         }
 
         [Theory]

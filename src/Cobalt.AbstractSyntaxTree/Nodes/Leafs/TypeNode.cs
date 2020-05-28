@@ -1,8 +1,15 @@
-﻿namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs
+﻿using Cobalt.Shared;
+
+namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs
 {
     public class TypeNode : AstNode
     {
-        public TypeNode(int sourceLine) : base(sourceLine) { }
+        public CobaltType Type { get; }
+
+        public TypeNode(int sourceLine, CobaltType type) : base(sourceLine)
+        {
+            Type = type;
+        }
 
         public override string ToString()
         {
