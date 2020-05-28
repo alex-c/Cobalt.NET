@@ -6,7 +6,7 @@ namespace Cobalt.AbstractSyntaxTree.Nodes.Statements
     public class VariableDeclarationStatementNode : StatementNode
     {
         private IdentifierNode _identifier;
-        private TypeNode _type;
+        private TypeKeywordNode _typeKeyword;
         private ExpressionNode _expression;
 
         public IdentifierNode Identifier
@@ -22,16 +22,16 @@ namespace Cobalt.AbstractSyntaxTree.Nodes.Statements
             }
         }
 
-        public TypeNode Type
+        public TypeKeywordNode TypeKeyword
         {
             get
             {
-                return _type;
+                return _typeKeyword;
             }
             set
             {
                 value.Parent = this;
-                _type = value;
+                _typeKeyword = value;
             }
         }
 
@@ -52,7 +52,7 @@ namespace Cobalt.AbstractSyntaxTree.Nodes.Statements
 
         public override string ToString()
         {
-            string type = Type == null ? " :" : $":{Type} ";
+            string type = TypeKeyword == null ? " :" : $":{TypeKeyword} ";
             string expr = Expression == null ? "" : $"= {Expression}";
             return $"{GetType().Name}({Identifier}{type}{expr})";
         }

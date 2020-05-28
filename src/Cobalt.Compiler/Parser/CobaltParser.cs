@@ -4,7 +4,7 @@ using Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions.UnaryExpressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
-using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeNodes;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeKeywords;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.Compiler.Exceptions;
 using Cobalt.Compiler.Tokens;
@@ -158,7 +158,7 @@ namespace Cobalt.Compiler.Parser
             IdentifierNode identifier = ParseIdentifier(tokens.ElementAt(1));
 
             // Parse type, if applicable
-            TypeNode type = null;
+            TypeKeywordNode type = null;
             if (tokens.ElementAt(3).Type == TokenType.TypeKeyword)
             {
                 type = ParseTypeKeyword(tokens.ElementAt(3));
@@ -186,7 +186,7 @@ namespace Cobalt.Compiler.Parser
             statement.Identifier = identifier;
             if (type != null)
             {
-                statement.Type = type;
+                statement.TypeKeyword = type;
             }
             if (expression != null)
             {
@@ -445,22 +445,22 @@ namespace Cobalt.Compiler.Parser
             }
         }
 
-        public TypeNode ParseTypeKeyword(Token token)
+        public TypeKeywordNode ParseTypeKeyword(Token token)
         {
             if (token.Type == TokenType.TypeKeyword)
             {
-                TypeNode type = null;
+                TypeKeywordNode type = null;
                 CobaltType cobaltType = token.GetData<CobaltType>(TokenDataKeys.COBALT_TYPE);
                 switch (cobaltType)
                 {
                     case CobaltType.Boolean:
-                        type = new BooleanTypeNode(token.SourceLine);
+                        type = new BooleanTypeKeywordNode(token.SourceLine);
                         break;
                     case CobaltType.Float:
-                        type = new FloatTypeNode(token.SourceLine);
+                        type = new FloatTypeKeywordNode(token.SourceLine);
                         break;
                     case CobaltType.Integer:
-                        type = new IntegerTypeNode(token.SourceLine);
+                        type = new IntegerTypeKeywordNode(token.SourceLine);
                         break;
                     default:
                         throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with unknown Cobalt type `{cobaltType}`.");

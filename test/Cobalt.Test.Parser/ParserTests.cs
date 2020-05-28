@@ -3,7 +3,7 @@ using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
-using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeNodes;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeKeywords;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.Compiler.Parser;
 using Cobalt.Compiler.Tokens;
@@ -64,19 +64,19 @@ namespace Cobalt.Test.Parser
             token.SetData(TokenDataKeys.COBALT_TYPE, type);
 
             // Act
-            TypeNode node = Parser.ParseTypeKeyword(token);
+            TypeKeywordNode node = Parser.ParseTypeKeyword(token);
 
             // Assert
             switch (type)
             {
                 case CobaltType.Boolean:
-                    Assert.True(node is BooleanTypeNode);
+                    Assert.True(node is BooleanTypeKeywordNode);
                     break;
                 case CobaltType.Float:
-                    Assert.True(node is FloatTypeNode);
+                    Assert.True(node is FloatTypeKeywordNode);
                     break;
                 case CobaltType.Integer:
-                    Assert.True(node is IntegerTypeNode);
+                    Assert.True(node is IntegerTypeKeywordNode);
                     break;
                 default:
                     throw new XunitException("No test implemented for this type.");

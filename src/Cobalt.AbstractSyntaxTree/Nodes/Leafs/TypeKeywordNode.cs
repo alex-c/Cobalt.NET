@@ -2,11 +2,11 @@
 
 namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs
 {
-    public class TypeNode : AstNode
+    public class TypeKeywordNode : AstNode
     {
         public CobaltType Type { get; }
 
-        public TypeNode(int sourceLine, CobaltType type) : base(sourceLine)
+        public TypeKeywordNode(int sourceLine, CobaltType type) : base(sourceLine)
         {
             Type = type;
         }
