@@ -1,6 +1,6 @@
 ﻿namespace Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions
 {
-    public class MultiplicationNode : BinaryExpressionNode
+    public class MultiplicationNode : ArithmeticBinaryExpressionNode
     {
         public MultiplicationNode(int souceLine) : base(souceLine) { }
     }
