@@ -1,17 +1,9 @@
-﻿namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues
+﻿using Cobalt.Shared;
+
+namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues
 {
-    public class BooleanValueNode : LiteralValueNode
+    public class BooleanValueNode : LiteralValueNode<bool>
     {
-        public bool Value { get; }
-
-        public BooleanValueNode(int sourceLine, bool value) : base(sourceLine)
-        {
-            Value = value;
-        }
-
-        public override string ToString()
-        {
-            return $"{GetType().Name}:{Value}";
-        }
+        public BooleanValueNode(int sourceLine, bool value) : base(sourceLine, CobaltType.Boolean, value) { }
     }
 }

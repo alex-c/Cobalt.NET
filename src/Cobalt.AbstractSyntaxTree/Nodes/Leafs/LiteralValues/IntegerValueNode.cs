@@ -1,17 +1,9 @@
-﻿namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues
+﻿using Cobalt.Shared;
+
+namespace Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues
 {
-    public class IntegerValueNode : LiteralValueNode
+    public class IntegerValueNode : LiteralValueNode<int>
     {
-        public int Value { get; }
-
-        public IntegerValueNode(int sourceLine, int value) : base(sourceLine)
-        {
-            Value = value;
-        }
-
-        public override string ToString()
-        {
-            return $"{GetType().Name}:{Value}";
-        }
+        public IntegerValueNode(int sourceLine, int value) : base(sourceLine, CobaltType.Integer, value) { }
     }
 }
