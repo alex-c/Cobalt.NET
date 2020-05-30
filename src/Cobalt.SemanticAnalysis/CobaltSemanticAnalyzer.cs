@@ -1,7 +1,10 @@
 ﻿using Cobalt.AbstractSyntaxTree;
-using Cobalt.AbstractSyntaxTree.Exceptions;
 using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.UnaryExpressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.AbstractSyntaxTree.Types;
 using Cobalt.SemanticAnalysis.Exceptions;
@@ -10,6 +13,7 @@ using Cobalt.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Cobalt.SemanticAnalysis
 {
@@ -76,7 +80,7 @@ namespace Cobalt.SemanticAnalysis
             }
             else
             {
-                throw new CompilerException("");
+                throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture in variable declaration from line {variableDeclaration.SourceLine}.");
             }
             Symbol variable = new Symbol(variableDeclaration.Identifier.IdentifierName,
                 new VariableTypeSignature(variableType),
@@ -102,7 +106,7 @@ namespace Cobalt.SemanticAnalysis
             }
             else
             {
-                throw new CompilerException($"The type signature of variable `{variable.Identifier}` is not a variable type signature.");
+                throw new CompilerException($"The type signature of identifier `{variable.Identifier}` is not a variable type signature.");
             }
         }
 
@@ -126,10 +130,163 @@ namespace Cobalt.SemanticAnalysis
 
         #endregion
 
+        #region Expressions
+
         private CobaltType AnalyzeExpression(ExpressionNode expression)
         {
-            throw new NotImplementedException();
+            CobaltType expressionType;
+            switch (expression)
+            {
+                case BinaryExpressionNode binaryExpression:
+                    expressionType = AnalyzeBinaryExpression(binaryExpression);
+                    break;
+                case UnaryExpressionNode unaryExpression:
+                    expressionType = AnalyzeUnaryExpression(unaryExpression);
+                    break;
+                case SingleLeafExpressionNode singleLeafExpression:
+                    expressionType = AnalyzeExpressionLeaf(singleLeafExpression.Leaf);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an expression node.");
+            }
+            return expressionType;
         }
+
+        private CobaltType AnalyzeBinaryExpression(BinaryExpressionNode binaryExpression)
+        {
+            CobaltType leftOperandType;
+            if (binaryExpression.LeftOperand is ExpressionNode leftOperandExpression)
+            {
+                leftOperandType = AnalyzeExpression(leftOperandExpression);
+            }
+            else
+            {
+                leftOperandType = AnalyzeExpressionLeaf(binaryExpression.LeftOperand);
+            }
+            CobaltType rightOperandType;
+            if (binaryExpression.RightOperand is ExpressionNode rightOperandExpression)
+            {
+                rightOperandType = AnalyzeExpression(rightOperandExpression);
+            }
+            else
+            {
+                rightOperandType = AnalyzeExpressionLeaf(binaryExpression.RightOperand);
+            }
+            switch (binaryExpression)
+            {
+                case ArithmeticBinaryExpressionNode arithmeticBinaryExpression:
+                    if (!IsNumberType(leftOperandType))
+                    {
+                        throw new CobaltTypeError($"Left operand of binary arithmetic expression is not a number type, but of type `{leftOperandType}` instead.", binaryExpression.LeftOperand.SourceLine);
+                    }
+                    if (!IsNumberType(rightOperandType))
+                    {
+                        throw new CobaltTypeError($"Right operand of binary arithmetic expression is not a number type, but of type `{rightOperandType}` instead.", binaryExpression.RightOperand.SourceLine);
+                    }
+                    switch (arithmeticBinaryExpression)
+                    {
+                        case AdditionNode _:
+                        case SubstractionNode _:
+                        case MultiplicationNode _:
+                            if (leftOperandType == CobaltType.Integer && rightOperandType == CobaltType.Integer)
+                            {
+                                return CobaltType.Integer;
+                            }
+                            else
+                            {
+                                return CobaltType.Float;
+                            }
+                        case DivisionNode _:
+                            return CobaltType.Float;
+                        default:
+                            throw new CompilerException($"Failed analyzing arithmetic binary expression.");
+                    }
+                case ComparisonNode comparison:
+                    if ((IsNumberType(leftOperandType) && IsNumberType(rightOperandType)) ||
+                        (leftOperandType == CobaltType.Boolean && rightOperandType == CobaltType.Boolean))
+                    {
+                        return CobaltType.Boolean;
+                    }
+                    throw new CobaltTypeError($"Illegal operand types in comparison expression. Left operand is of type `{leftOperandType}`, right operand is of type `{rightOperandType}`.", comparison.SourceLine);
+                case LogicalAndNode _:
+                case LogicalOrNode _:
+
+                    if (leftOperandType == CobaltType.Boolean && rightOperandType == CobaltType.Boolean)
+                    {
+                        return CobaltType.Boolean;
+                    }
+                    else
+                    {
+                        if (leftOperandType != CobaltType.Boolean)
+                        {
+                            throw new CobaltTypeError($"Left operand of binary logical expression is not of type `{CobaltType.Boolean}`, but of type `{leftOperandType}` instead.", binaryExpression.LeftOperand.SourceLine);
+                        }
+                        else
+                        {
+                            throw new CobaltTypeError($"Right operand of binary logical expression is not of type `{CobaltType.Boolean}`, but of type `{rightOperandType}` instead.", binaryExpression.RightOperand.SourceLine);
+                        }
+                    }
+                default:
+                    throw new CompilerException("Failed analyzing binary expression.");
+            }
+        }
+
+        private CobaltType AnalyzeUnaryExpression(UnaryExpressionNode unaryExpression)
+        {
+            CobaltType operandType;
+            if (unaryExpression.Operand is ExpressionNode operandExpression)
+            {
+                operandType = AnalyzeExpression(operandExpression);
+            }
+            else
+            {
+                operandType = AnalyzeExpressionLeaf(unaryExpression.Operand);
+            }
+            switch (unaryExpression)
+            {
+                case ArithmeticNegationNode _:
+                    if (IsNumberType(operandType))
+                    {
+                        return operandType;
+                    }
+                    throw new CobaltTypeError($"An arithmetic negation (`~`) cannot be applied on an operand of type `{operandType}`.", unaryExpression.SourceLine);
+                case LogicalNegationNode _:
+                    if (operandType == CobaltType.Boolean)
+                    {
+                        return operandType;
+                    }
+                    throw new CobaltTypeError($"A logical negation (`!`) cannot be applied on an operand of type `{operandType}`.", unaryExpression.SourceLine);
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` does not contain an implementation for the unary expression type `{unaryExpression.GetType()}`.");
+            }
+        }
+
+        public CobaltType AnalyzeExpressionLeaf(AstNode node)
+        {
+            CobaltType type;
+            switch (node)
+            {
+                case LiteralValueNode literalValue:
+                    type = literalValue.Type;
+                    break;
+                case IdentifierNode identifier:
+                    Symbol symbol = LookupSymbol(node.Parent, identifier.IdentifierName);
+                    if (symbol.Type is VariableTypeSignature variableType)
+                    {
+                        type = variableType.CobaltType;
+                    }
+                    else
+                    {
+                        throw new CompilerException($"The type signature of identifier `{identifier.IdentifierName}` is not a variable type signature.");
+                    }
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an expression leaf node.");
+            }
+            return type;
+        }
+
+        #endregion
 
         #region Symbol table helpers
 
@@ -169,5 +326,10 @@ namespace Cobalt.SemanticAnalysis
         }
 
         #endregion
+
+        private bool IsNumberType(CobaltType type)
+        {
+            return type == CobaltType.Integer || type == CobaltType.Float;
+        }
     }
 }
