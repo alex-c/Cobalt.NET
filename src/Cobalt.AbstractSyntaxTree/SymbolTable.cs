@@ -18,6 +18,7 @@ namespace Cobalt.AbstractSyntaxTree
             {
                 throw new DuplicateDeclarationError(symbol);
             }
+            Symbols.Add(symbol.Identifier, symbol);
         }
 
         public bool TryGetSymbol(string identifier, out Symbol symbol)
