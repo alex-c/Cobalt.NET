@@ -170,6 +170,7 @@ namespace Cobalt.Test.Parser
             // Assert
             if (expression is SingleLeafExpressionNode singleLeafExpression)
             {
+                Assert.Equal(expression, singleLeafExpression.Leaf.Parent);
                 if (singleLeafExpression.Leaf is BooleanValueNode booleanValue)
                 {
                     Assert.Equal(CobaltType.Boolean, type);
@@ -215,6 +216,7 @@ namespace Cobalt.Test.Parser
             // Assert
             if (expression is SingleLeafExpressionNode singleLeafExpression)
             {
+                Assert.Equal(expression, singleLeafExpression.Leaf.Parent);
                 if (singleLeafExpression.Leaf is IdentifierNode identifierNode)
                 {
                     Assert.Equal(identifierName, identifierNode.IdentifierName);
@@ -313,6 +315,7 @@ namespace Cobalt.Test.Parser
             StatementNode statement = program.Code.Statements.First();
             if (statement is StandardInputStatementNode inputStatement)
             {
+                Assert.Equal(program.Code, inputStatement.Parent);
                 Assert.Equal(identifierName, inputStatement.Identifier.IdentifierName);
             }
             else
@@ -351,6 +354,7 @@ namespace Cobalt.Test.Parser
             StatementNode statement = program.Code.Statements.First();
             if (statement is StandardOutputStatementNode outputStatement)
             {
+                Assert.Equal(program.Code, outputStatement.Parent);
                 ExpressionNode expression = outputStatement.Expression;
                 if (expression is SingleLeafExpressionNode singleLeafExpression)
                 {
