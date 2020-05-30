@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Cobalt
@@ -15,7 +16,7 @@ namespace Cobalt
     {
         private static readonly string ARG_INPUT_FILE = "inputFile";
         private static readonly string ARG_OUTPUT_DIR = "outputDir";
-        private static readonly string ARG_TARGET = "target";
+        private static readonly string ARG_TARGET_PLATFORM = "targetPlatform";
 
         /// <summary>
         /// The compiler entry point.
@@ -28,7 +29,7 @@ namespace Cobalt
             {
                 { "-i", ARG_INPUT_FILE },
                 { "-o", ARG_OUTPUT_DIR },
-                { "-t", ARG_TARGET }
+                { "-t", ARG_TARGET_PLATFORM }
             }).Build();
 
             // Check for verbose mode
@@ -49,12 +50,12 @@ namespace Cobalt
             // Parse command line arguments
             string inputFile = configuration.GetValue<string>(ARG_INPUT_FILE);
             string outputDir = configuration.GetValue<string>(ARG_OUTPUT_DIR);
-            string target = configuration.GetValue<string>(ARG_TARGET);
+            string targetPlatform = configuration.GetValue<string>(ARG_TARGET_PLATFORM);
 
             // Validate required parameters
             if (string.IsNullOrWhiteSpace(inputFile) ||
                 string.IsNullOrWhiteSpace(outputDir) ||
-                string.IsNullOrWhiteSpace(target))
+                string.IsNullOrWhiteSpace(targetPlatform))
             {
                 logger.LogCritical("One or more required parameter is missing!");
                 PrintHelpAndExit(logger);
@@ -63,19 +64,19 @@ namespace Cobalt
             // Display information in verbose mode
             logger.LogDebug("Compiler parameters:");
             logger.LogDebug($" - Input file: {inputFile}");
-            logger.LogDebug($" - Output dir: {outputDir}");
-            logger.LogDebug($" - Target: {target}");
+            logger.LogDebug($" - Output directory: {outputDir}");
+            logger.LogDebug($" - Target platform: {targetPlatform}");
 
             // Set up compiler backend
-            ICompilerBackend backend = null;
-            switch (target.ToLowerInvariant())
+            ITargetCodeGenerator backend = null;
+            switch (targetPlatform.ToLowerInvariant())
             {
                 case "js":
                 case "javascript":
                     backend = new JavaScriptCodeGenerator();
                     break;
                 default:
-                    logger.LogError($"Unknown target platform `{target}`.");
+                    logger.LogError($"Unknown target platform `{targetPlatform}`.");
                     break;
             }
 
@@ -86,13 +87,23 @@ namespace Cobalt
                     // Set up compiler
                     CobaltCompiler compiler = new CobaltCompiler(loggerFactory, backend);
 
-                    // TODO: read code from input file
-                    string sourceCode = "TODO!";
+                    // Read source code from input file
+                    string sourceCode = File.ReadAllText(inputFile);
 
                     // Compile!
-                    string targetCode = compiler.Compile(sourceCode);
+                    TargetProgram targetProgram = compiler.Compile(sourceCode);
 
-                    // TODO: write to output file
+                    // Write output files
+                    if (!Directory.Exists(outputDir))
+                    {
+                        Directory.CreateDirectory(outputDir);
+                    }
+                    foreach (ITargetFile file in targetProgram.GetFiles())
+                    {
+                        string filePath = Path.Combine(outputDir, file.Name);
+                        File.Create(filePath);
+                        file.Writer.WriteTargetFile(file, filePath);
+                    }
                 }
                 catch (Exception exception)
                 {

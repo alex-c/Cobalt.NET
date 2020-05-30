@@ -4,9 +4,9 @@ using System;
 
 namespace Cobalt.Target.JavaScript
 {
-    public class JavaScriptCodeGenerator : ICompilerBackend
+    public class JavaScriptCodeGenerator : ITargetCodeGenerator
     {
-        public string GenerateTargetCode(CobaltProgram cobaltProgram)
+        public TargetProgram GenerateTargetCode(CobaltProgram cobaltProgram)
         {
             throw new NotImplementedException();
         }

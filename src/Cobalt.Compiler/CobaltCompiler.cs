@@ -39,13 +39,13 @@ namespace Cobalt.Compiler
 
         private CobaltSemanticAnalyzer Analyzer { get; }
 
-        private ICompilerBackend TargetCodeGenerator { get; }
+        private ITargetCodeGenerator TargetCodeGenerator { get; }
 
         /// <summary>
         /// Sets up the compiler instance with all needed components.
         /// </summary>
         /// <param name="loggerFactory">A logger factory to use to instantiate loggers.</param>
-        public CobaltCompiler(ILoggerFactory loggerFactory, ICompilerBackend compilerBackend)
+        public CobaltCompiler(ILoggerFactory loggerFactory, ITargetCodeGenerator compilerBackend)
         {
             Logger = loggerFactory.CreateLogger<CobaltCompiler>();
             Lexer = new CobaltLexer(loggerFactory);
@@ -59,8 +59,8 @@ namespace Cobalt.Compiler
         /// Compiles a Cobalt program.
         /// </summary>
         /// <param name="sourceCode">The input Cobalt code.</param>
-        /// <returns>Returns the compiled target code.</returns>
-        public string Compile(string sourceCode, bool disableOptimization = false)
+        /// <returns>Returns the compiled target program.</returns>
+        public TargetProgram Compile(string sourceCode, bool disableOptimization = false)
         {
             try
             {
@@ -80,8 +80,8 @@ namespace Cobalt.Compiler
                 }
 
                 // Target code generation
-                string targetCode = TargetCodeGenerator.GenerateTargetCode(ast);
-                return targetCode;
+                TargetProgram targetProgram = TargetCodeGenerator.GenerateTargetCode(ast);
+                return targetProgram;
             }
             catch (CobaltSyntaxError exception)
             {
