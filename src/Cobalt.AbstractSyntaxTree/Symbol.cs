@@ -8,15 +8,15 @@ namespace Cobalt.AbstractSyntaxTree
 
         public ITypeSignature Type { get; }
 
-        public bool ValueAssigned { get; set; }
+        public bool Initialized { get; set; }
 
         public int DefinedOnLine { get; }
 
-        public Symbol(string identifier, ITypeSignature type, bool valueAssigned, int definedOnLine)
+        public Symbol(string identifier, ITypeSignature type, bool initialized, int definedOnLine)
         {
             Identifier = identifier;
             Type = type;
-            ValueAssigned = valueAssigned;
+            Initialized = initialized;
             DefinedOnLine = definedOnLine;
         }
     }

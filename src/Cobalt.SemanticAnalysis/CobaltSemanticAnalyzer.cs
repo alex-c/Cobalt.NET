@@ -97,7 +97,7 @@ namespace Cobalt.SemanticAnalysis
             {
                 if (variableType.CobaltType == expressionType)
                 {
-                    variable.ValueAssigned = true;
+                    variable.Initialized = true;
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace Cobalt.SemanticAnalysis
             Symbol identifier = LookupSymbol(standardInput.Parent, standardInput.Identifier.IdentifierName);
             if (identifier.Type is VariableTypeSignature)
             {
-                identifier.ValueAssigned = true;
+                identifier.Initialized = true;
             }
             else
             {
@@ -271,6 +271,10 @@ namespace Cobalt.SemanticAnalysis
                     break;
                 case IdentifierNode identifier:
                     Symbol symbol = LookupSymbol(node.Parent, identifier.IdentifierName);
+                    if (!symbol.Initialized)
+                    {
+                        throw new UninitializedVariableError(symbol.Identifier);
+                    }
                     if (symbol.Type is VariableTypeSignature variableType)
                     {
                         type = variableType.CobaltType;
