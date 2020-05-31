@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cobalt.SemanticAnalysis.Exceptions
+namespace Cobalt.AbstractSyntaxTree.Exceptions
 {
     /// <summary>
     /// Describes an undeclared identifier error.

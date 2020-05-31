@@ -86,12 +86,12 @@ namespace Cobalt.SemanticAnalysis
                 new VariableTypeSignature(variableType),
                 variableDeclaration.Expression != null,
                 variableDeclaration.SourceLine);
-            RegisterSymbol(variableDeclaration.Parent, variable);
+            variableDeclaration.Parent.RegisterSymbol(variable);
         }
 
         private void AnalyzeVariableAssignment(VariableAssignmentStatementNode variableAssignment)
         {
-            Symbol variable = LookupSymbol(variableAssignment.Parent, variableAssignment.Identifier.IdentifierName);
+            Symbol variable = variableAssignment.Parent.LookupSymbol(variableAssignment.Identifier.IdentifierName);
             CobaltType expressionType = AnalyzeExpression(variableAssignment.Expression);
             if (variable.Type is VariableTypeSignature variableType)
             {
@@ -112,7 +112,7 @@ namespace Cobalt.SemanticAnalysis
 
         private void AnalzyeStandardInputStatement(StandardInputStatementNode standardInput)
         {
-            Symbol identifier = LookupSymbol(standardInput.Parent, standardInput.Identifier.IdentifierName);
+            Symbol identifier = standardInput.Parent.LookupSymbol(standardInput.Identifier.IdentifierName);
             if (identifier.Type is VariableTypeSignature)
             {
                 identifier.Initialized = true;
@@ -270,7 +270,7 @@ namespace Cobalt.SemanticAnalysis
                     type = literalValue.Type;
                     break;
                 case IdentifierNode identifier:
-                    Symbol symbol = LookupSymbol(node.Parent, identifier.IdentifierName);
+                    Symbol symbol = node.Parent.LookupSymbol(identifier.IdentifierName);
                     if (!symbol.Initialized)
                     {
                         throw new UninitializedVariableError(symbol.Identifier);
@@ -288,45 +288,6 @@ namespace Cobalt.SemanticAnalysis
                     throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an expression leaf node.");
             }
             return type;
-        }
-
-        #endregion
-
-        #region Symbol table helpers
-
-        private void RegisterSymbol(AstNode node, Symbol symbol)
-        {
-            if (node is ScopeDefiningAstNode scopeDefiningAstNode)
-            {
-                scopeDefiningAstNode.SymbolTable.RegisterSymbol(symbol);
-            }
-            else if (node.Parent != null)
-            {
-                RegisterSymbol(node.Parent, symbol);
-            }
-            else
-            {
-                throw new CompilerException($"Could not find a scope-defining AST node. Last parentless visited node is of type {node.GetType()}.");
-            }
-        }
-
-        private Symbol LookupSymbol(AstNode node, string identifier)
-        {
-            if (node is ScopeDefiningAstNode scopeDefiningAstNode)
-            {
-                if (scopeDefiningAstNode.SymbolTable.TryGetSymbol(identifier, out Symbol symbol))
-                {
-                    return symbol;
-                }
-            }
-            if (node.Parent != null)
-            {
-                return LookupSymbol(node.Parent, identifier);
-            }
-            else
-            {
-                throw new UndeclaredIdentifierError(identifier);
-            }
         }
 
         #endregion

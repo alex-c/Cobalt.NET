@@ -1,4 +1,5 @@
 using Cobalt.AbstractSyntaxTree;
+using Cobalt.AbstractSyntaxTree.Exceptions;
 using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
@@ -6,13 +7,10 @@ using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Nodes.Leafs.TypeKeywords;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.AbstractSyntaxTree.Types;
-using Cobalt.Compiler.Tokens;
 using Cobalt.SemanticAnalysis;
 using Cobalt.SemanticAnalysis.Exceptions;
 using Cobalt.Shared;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Sdk;
 

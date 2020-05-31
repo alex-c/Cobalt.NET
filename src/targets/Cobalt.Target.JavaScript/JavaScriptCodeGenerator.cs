@@ -1,10 +1,14 @@
-﻿using Cobalt.AbstractSyntaxTree.Nodes;
+﻿using Cobalt.AbstractSyntaxTree;
+using Cobalt.AbstractSyntaxTree.Exceptions;
+using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
+using Cobalt.AbstractSyntaxTree.Types;
 using Cobalt.Compiler;
 using Cobalt.Compiler.TargetFiles;
 using Cobalt.Shared.Exceptions;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Cobalt.Target.JavaScript
@@ -70,8 +74,28 @@ namespace Cobalt.Target.JavaScript
 
         private void GenerateStandardInputStatementCode(StringBuilder builder, StandardInputStatementNode standardInputStatement)
         {
-            // TODO: find symbol type...
-            builder.Append($"let {standardInputStatement.Identifier.IdentifierName}=await $cobalt_stdin('Input <TODO:Type>: ');");
+            string identifier = standardInputStatement.Identifier.IdentifierName;
+
+            // Lookup variable symbol
+            Symbol variable = null;
+            try
+            {
+                variable = standardInputStatement.LookupSymbol(identifier);
+            }
+            catch (UndeclaredIdentifierError)
+            {
+                throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` failed looking up symbol `{identifier}`.");
+            }
+
+            // Get input with hint about type
+            if (variable.Type is VariableTypeSignature variableType)
+            {
+                builder.Append($"let {identifier}=await $cobalt_stdin('Input <{variableType.CobaltType}>: ');");
+            }
+            else
+            {
+                throw new CompilerException($"Symbol looked up in `{MethodBase.GetCurrentMethod().Name}` for identifier `{identifier}` doesn't have a variable type signature.");
+            }
         }
 
         private void GenerateStandardOutputStatementCode(StringBuilder builder, StandardOutputStatementNode standardOutputStatement)
