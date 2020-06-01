@@ -2,11 +2,16 @@
 using Cobalt.AbstractSyntaxTree.Exceptions;
 using Cobalt.AbstractSyntaxTree.Nodes;
 using Cobalt.AbstractSyntaxTree.Nodes.Expressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.BinaryExpressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Expressions.UnaryExpressions;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs;
+using Cobalt.AbstractSyntaxTree.Nodes.Leafs.LiteralValues;
 using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.AbstractSyntaxTree.Types;
 using Cobalt.Compiler;
 using Cobalt.Compiler.TargetFiles;
 using Cobalt.Shared.Exceptions;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -60,6 +65,7 @@ namespace Cobalt.Target.JavaScript
 
         private void GenerateVariableDeclarationCode(StringBuilder builder, VariableDeclarationStatementNode variableDeclaration)
         {
+            // TODO: declaration without expression!
             builder.Append($"let {variableDeclaration.Identifier.IdentifierName}=");
             GenerateExpressionCode(builder, variableDeclaration.Expression);
             builder.Append(";");
@@ -108,7 +114,150 @@ namespace Cobalt.Target.JavaScript
 
         private void GenerateExpressionCode(StringBuilder builder, ExpressionNode expression)
         {
-            // TODO: implement
+            switch (expression)
+            {
+                case BinaryExpressionNode binaryExpression:
+                    GenerateBinaryExpressionCode(builder, binaryExpression);
+                    break;
+                case UnaryExpressionNode unaryExpression:
+                    GenerateUnaryExpressionCode(builder, unaryExpression);
+                    break;
+                case SingleLeafExpressionNode singleLeafExpression:
+                    GenerateExpressionLeafCode(builder, singleLeafExpression.Leaf);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an expression node. Node is of type `{expression.GetType()}` instead.");
+            }
+        }
+
+        private void GenerateBinaryExpressionCode(StringBuilder builder, BinaryExpressionNode binaryExpression)
+        {
+            // TODO: generate parenthesises only where needed
+
+            // Left operand
+            builder.Append("(");
+            if (binaryExpression.LeftOperand is ExpressionNode leftOperandExpression)
+            {
+                GenerateExpressionCode(builder, leftOperandExpression);
+            }
+            else
+            {
+                GenerateExpressionLeafCode(builder, binaryExpression.LeftOperand);
+            }
+            builder.Append(")");
+
+            // Operator
+            switch (binaryExpression)
+            {
+                case AdditionNode _:
+                    builder.Append("+");
+                    break;
+                case SubstractionNode _:
+                    builder.Append("-");
+                    break;
+                case MultiplicationNode _:
+                    builder.Append("*");
+                    break;
+                case DivisionNode _:
+                    builder.Append("/");
+                    break;
+                case LogicalAndNode _:
+                    builder.Append("&&");
+                    break;
+                case LogicalOrNode _:
+                    builder.Append("||");
+                    break;
+                case EqualsComparisonNode _:
+                    builder.Append("==");
+                    break;
+                case NotEqualsComparisonNode _:
+                    builder.Append("!=");
+                    break;
+                case GreaterComparisonNode _:
+                    builder.Append(">");
+                    break;
+                case EqualsOrGreaterComparisonNode _:
+                    builder.Append(">=");
+                    break;
+                case LessComparisonNode _:
+                    builder.Append("<");
+                    break;
+                case EqualsOrLessComparisonNode _:
+                    builder.Append("<=");
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected a binary expression node.");
+            }
+
+            // Right operand
+            builder.Append("(");
+            if (binaryExpression.RightOperand is ExpressionNode rightOperandExpression)
+            {
+                GenerateExpressionCode(builder, rightOperandExpression);
+            }
+            else
+            {
+                GenerateExpressionLeafCode(builder, binaryExpression.RightOperand);
+            }
+            builder.Append(")");
+        }
+
+        private void GenerateUnaryExpressionCode(StringBuilder builder, UnaryExpressionNode unaryExpression)
+        {
+            switch (unaryExpression)
+            {
+                case ArithmeticNegationNode _:
+                    builder.Append("-");
+                    break;
+                case LogicalNegationNode _:
+                    builder.Append("!");
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an unary expression node.");
+            }
+            builder.Append("(");
+            if (unaryExpression.Operand is ExpressionNode expression)
+            {
+                GenerateExpressionCode(builder, expression);
+            }
+            else
+            {
+                GenerateExpressionLeafCode(builder, unaryExpression.Operand);
+            }
+            builder.Append(")");
+        }
+
+        private void GenerateExpressionLeafCode(StringBuilder builder, AstNode node)
+        {
+            switch (node)
+            {
+                case LiteralValueNode literalValue:
+                    GenerateLiteralValueCode(builder, literalValue);
+                    break;
+                case IdentifierNode identifier:
+                    builder.Append(identifier.IdentifierName);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected an expression leaf node.");
+            }
+        }
+
+        private void GenerateLiteralValueCode(StringBuilder builder, LiteralValueNode literalValue)
+        {
+            switch (literalValue)
+            {
+                case BooleanValueNode booleanValue:
+                    builder.Append(booleanValue.Value);
+                    break;
+                case FloatValueNode floatValue:
+                    builder.Append(floatValue.Value);
+                    break;
+                case IntegerValueNode integerValue:
+                    builder.Append(integerValue.Value);
+                    break;
+                default:
+                    throw new CompilerException($"`{MethodBase.GetCurrentMethod().Name}` called with bad AST stucture. Expected a literal value node.");
+            }
         }
     }
 }
