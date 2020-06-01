@@ -10,6 +10,7 @@ using Cobalt.AbstractSyntaxTree.Nodes.Statements;
 using Cobalt.AbstractSyntaxTree.Types;
 using Cobalt.Compiler;
 using Cobalt.Compiler.TargetFiles;
+using Cobalt.Shared;
 using Cobalt.Shared.Exceptions;
 using System;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace Cobalt.Target.JavaScript
                         throw new CompilerException($"Code generation for node of type `{statement.GetType()}` not implemented for platform `{Platform}`.");
                 }
             }
-            builder.Append("})();");
+            builder.Append("process.exit();})();");
             return builder.ToString();
         }
 
@@ -99,7 +100,20 @@ namespace Cobalt.Target.JavaScript
             // Get input with hint about type
             if (variable.Type is VariableTypeSignature variableType)
             {
-                builder.Append($"let {identifier}=await $cobalt_stdin('Input <{variableType.CobaltType}>: ');");
+                switch (variableType.CobaltType)
+                {
+                    case CobaltType.Boolean:
+                        builder.Append($"{identifier}=await $cobalt_stdin('Input <{variableType.CobaltType}>: ') == 'true';");
+                        break;
+                    case CobaltType.Float:
+                        builder.Append($"{identifier}=parseFloat(await $cobalt_stdin('Input <{variableType.CobaltType}>: '));");
+                        break;
+                    case CobaltType.Integer:
+                        builder.Append($"{identifier}=parseInt(await $cobalt_stdin('Input <{variableType.CobaltType}>: '));");
+                        break;
+                    default:
+                        throw new CompilerException($"Unknown Cobalt type `{variableType.CobaltType}` encountered in {MethodBase.GetCurrentMethod().Name}.");
+                }
             }
             else
             {
@@ -138,16 +152,16 @@ namespace Cobalt.Target.JavaScript
             // TODO: generate parenthesises only where needed
 
             // Left operand
-            builder.Append("(");
             if (binaryExpression.LeftOperand is ExpressionNode leftOperandExpression)
             {
+                builder.Append("(");
                 GenerateExpressionCode(builder, leftOperandExpression);
+                builder.Append(")");
             }
             else
             {
                 GenerateExpressionLeafCode(builder, binaryExpression.LeftOperand);
             }
-            builder.Append(")");
 
             // Operator
             switch (binaryExpression)
@@ -193,16 +207,16 @@ namespace Cobalt.Target.JavaScript
             }
 
             // Right operand
-            builder.Append("(");
             if (binaryExpression.RightOperand is ExpressionNode rightOperandExpression)
             {
+                builder.Append("(");
                 GenerateExpressionCode(builder, rightOperandExpression);
+                builder.Append(")");
             }
             else
             {
                 GenerateExpressionLeafCode(builder, binaryExpression.RightOperand);
             }
-            builder.Append(")");
         }
 
         private void GenerateUnaryExpressionCode(StringBuilder builder, UnaryExpressionNode unaryExpression)
