@@ -2,7 +2,7 @@
   "profiles": {
     "Cobalt": {
       "commandName": "Project",
-      "commandLineArgs": "-v -i test.co -o test -t js"
+      "commandLineArgs": "-v -i mean.co -o output -t node"
     }
   }
 }

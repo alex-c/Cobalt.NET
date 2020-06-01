@@ -19,9 +19,9 @@ using System.Text;
 
 namespace Cobalt.Target.JavaScript
 {
-    public class JavaScriptCodeGenerator : ITargetCodeGenerator
+    public class NodeJavaScriptCodeGenerator : ITargetCodeGenerator
     {
-        public string Platform { get; } = "JavaScript";
+        public string Platform { get; } = "JavaScript:Node";
 
         public TargetProgram GenerateTargetCode(CobaltProgram cobaltProgram)
         {

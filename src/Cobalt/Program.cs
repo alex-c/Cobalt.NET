@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -71,9 +72,9 @@ namespace Cobalt
             ITargetCodeGenerator backend = null;
             switch (targetPlatform.ToLowerInvariant())
             {
-                case "js":
-                case "javascript":
-                    backend = new JavaScriptCodeGenerator();
+                case "node":
+                case "Node":
+                    backend = new NodeJavaScriptCodeGenerator();
                     break;
                 default:
                     logger.LogError($"Unknown target platform `{targetPlatform}`.");
@@ -91,19 +92,26 @@ namespace Cobalt
                     string sourceCode = File.ReadAllText(inputFile);
 
                     // Compile!
+                    logger.LogInformation("Compiling program...");
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     TargetProgram targetProgram = compiler.Compile(sourceCode);
+                    stopwatch.Stop();
+                    logger.LogInformation($"Successfully compiled program in {stopwatch.ElapsedMilliseconds} ms.");
 
                     // Write output files
                     if (!Directory.Exists(outputDir))
                     {
                         Directory.CreateDirectory(outputDir);
                     }
+                    logger.LogInformation($"Writing files to {outputDir}...");
                     foreach (ITargetFile file in targetProgram.GetFiles())
                     {
                         string filePath = Path.Combine(outputDir, file.Name);
-                        File.Create(filePath);
                         file.Writer.WriteTargetFile(file, filePath);
+                        logger.LogDebug($" - Wrote file {file.Name}");
                     }
+                    logger.LogInformation("All files have been written to disk.");
                 }
                 catch (Exception exception)
                 {
@@ -116,12 +124,9 @@ namespace Cobalt
                         logger.LogError("Compilation failed.", exception);
                     }
                     logger.LogInformation("Press any key to terminate...");
-                    Console.Read();
+                    Console.ReadKey();
                 }
             }
-
-            // TODO: remove this
-            Console.Read();
         }
 
         /// <summary>
