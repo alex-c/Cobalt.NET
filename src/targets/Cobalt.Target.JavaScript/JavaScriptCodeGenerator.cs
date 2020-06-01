@@ -65,9 +65,12 @@ namespace Cobalt.Target.JavaScript
 
         private void GenerateVariableDeclarationCode(StringBuilder builder, VariableDeclarationStatementNode variableDeclaration)
         {
-            // TODO: declaration without expression!
-            builder.Append($"let {variableDeclaration.Identifier.IdentifierName}=");
-            GenerateExpressionCode(builder, variableDeclaration.Expression);
+            builder.Append($"let {variableDeclaration.Identifier.IdentifierName}");
+            if (variableDeclaration.Expression != null)
+            {
+                builder.Append("=");
+                GenerateExpressionCode(builder, variableDeclaration.Expression);
+            }
             builder.Append(";");
         }
 
